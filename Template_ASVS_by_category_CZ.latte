@@ -154,12 +154,7 @@
       <div class="page section3">
         <tocentry content="2 Popis dokumentu" />
         <h2>2 Popis dokumentu</h2>
-        <p>Tento dokument obsahuje výsledky penetračního testu, jehož provedením byla pověřena společnost {$report->getReportOwnerName()}. Penetrační test měl v praxi
-          ověřit funkčnost zabezpečení webové aplikace {$report->getProjectName()}. Penetrační test byl prováděn z anonymní úrovně, bez
-          znalosti zdrojových kódů aplikace. Konzultant společnosti {$report->getReportOwnerName()} provádějící test disponoval pouze omezenou znalostí o prostředí
-          zákazníka a vycházel především z informací běžně dostupných libovolnému uživateli Internetu. Testování bylo zaměřeno na odhalení možnosti průniku do
-          aplikace (a dalších souvisejících prvků, např. do databází interní sítě) „náhodným“ útočníkem (tzv. „outsiderem“), který nemá představu o struktuře a obsahu
-          aplikace a pouze „pokouší štěstí“.</p>
+        <p>Tento dokument obsahuje výsledky penetračního testu, jehož provedením byla pověřena společnost {$report->getReportOwnerName()}. Penetrační test měl v praxi ověřit funkčnost zabezpečení webové aplikace {$report->getProjectName()}. Penetrační test byl prováděn z anonymní úrovně, bez znalosti zdrojových kódů aplikace. Konzultant společnosti {$report->getReportOwnerName()} provádějící test disponoval pouze omezenou znalostí o prostředí zákazníka a vycházel především z informací běžně dostupných libovolnému uživateli Internetu. Testování bylo zaměřeno na odhalení možnosti průniku do aplikace (a dalších souvisejících prvků, např. do databází interní sítě) „náhodným“ útočníkem (tzv. „outsiderem“), který nemá představu o struktuře a obsahu aplikace a pouze „pokouší štěstí“.</p>
         <p>Dokument je rozdělen do několika částí:
         <ul>
           <li><b>Manažerský souhrn</b> - stručný průřez průběhu testů společně s výsledky.</li>
@@ -223,8 +218,8 @@
 
         <tocentry content="4.1 Předmět testu" level="1" />
         <h3>4.1 Předmět testu</h3>
-        <p n:if="!$report->getTestingSubjectDescription()">Předmětem testu byla webová aplikace <b>{$report->getProjectName()}</b> provozovaná na doméně
-          <b>{$report->getProjectUrl()}</b>
+        <p n:if="!$report->getTestingSubjectDescription()">
+          Předmětem testu byla webová aplikace <b>{$report->getProjectName()}</b> provozovaná na doméně <b>{$report->getProjectUrl()}</b>
         </p>
         <p n:if="$report->getTestingSubjectDescription()">{$report->getTestingSubjectDescription()}</p>
 
