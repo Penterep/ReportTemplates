@@ -1,0 +1,355 @@
+{varType Entities\ReportEntity $report}
+{varType Entities\VulnerabilityEntity $vulnerability}
+{varType Entities\NodesGroupEntity $nodes}
+{varType Entities\VulnerabilitiesGroupEntity $vulnerabilitiesGroupEntity}
+{varType Entities\TestingModuleEntity $module}
+{varType Entities\NodeEntity $node}
+
+<!-- Obrázky pro grafické zobrazení závažnosti -->
+{var $imgSeverityMime = "image/svg+xml"}
+{var $imgSeverity = [
+"severityInfo" =>
+"PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojMDBiN2JhO30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzFfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTY0LjczLDcxYTMwLDMwLDAsMCwwLTUuNjUsMTQuNjksMy40NSwzLjQ1LDAsMCwxLTMuNDEsMy4xNUgxNC4xOGEzLjQzLDMuNDMsMCwwLDEtMy40My0zLjU5QTc4LjExLDc4LjExLDAsMCwxLDI1LjY5LDQyLjY4WiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NiwzLjQ2LDAsMCwxLTMuNDItMy4xNkEzMC40MywzMC40MywwLDAsMCw3OS44OCw2MHYwYTMwLjMzLDMwLjMzLDAsMCwwLTE1LjE3LDExbC0zOS0yOC4zN0E3OC43Nyw3OC43NywwLDAsMSw2NC43NywxNC4xOWwwLS4xNUE3OC44Miw3OC44MiwwLDAsMSwxNjcuNzgsODUuMzhaIi8+PHBhdGggY2xhc3M9ImNscy00IiBkPSJNODkuNSw3Ni4xOHYwbC00MSwuNTdMODcuNzYsODguNTV2MGE2LjA3LDYuMDcsMCwwLDAsLjg0LjIxLDYuMzIsNi4zMiwwLDEsMCwxLjc2LTEyLjUxQTUsNSwwLDAsMCw4OS41LDc2LjE4WiIvPjwvc3ZnPg==",
+"vulnSeverityInfo" =>
+"PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojMDBiN2JhO30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzFfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTY0LjczLDcxYTMwLDMwLDAsMCwwLTUuNjUsMTQuNjksMy40NSwzLjQ1LDAsMCwxLTMuNDEsMy4xNUgxNC4xOGEzLjQzLDMuNDMsMCwwLDEtMy40My0zLjU5QTc4LjExLDc4LjExLDAsMCwxLDI1LjY5LDQyLjY4WiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NiwzLjQ2LDAsMCwxLTMuNDItMy4xNkEzMC40MywzMC40MywwLDAsMCw3OS44OCw2MHYwYTMwLjMzLDMwLjMzLDAsMCwwLTE1LjE3LDExbC0zOS0yOC4zN0E3OC43Nyw3OC43NywwLDAsMSw2NC43NywxNC4xOWwwLS4xNUE3OC44Miw3OC44MiwwLDAsMSwxNjcuNzgsODUuMzhaIi8+PHBhdGggY2xhc3M9ImNscy00IiBkPSJNODkuNSw3Ni4xOHYwbC00MSwuNTdMODcuNzYsODguNTV2MGE2LjA3LDYuMDcsMCwwLDAsLjg0LjIxLDYuMzIsNi4zMiwwLDEsMCwxLjc2LTEyLjUxQTUsNSwwLDAsMCw4OS41LDc2LjE4WiIvPjwvc3ZnPg==",
+"severityLow" =>
+"PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojMTk4NzU0O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzJfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTc5Ljg5LDYwQTMwLjM5LDMwLjM5LDAsMCwwLDY0LjcyLDcxYTMwLjA5LDMwLjA5LDAsMCwwLTUuNjQsMTQuNjksMy40NiwzLjQ2LDAsMCwxLTMuNDIsMy4xNUgxNC4xOGEzLjQzLDMuNDMsMCwwLDEtMy40My0zLjU5QTc4LjY3LDc4LjY3LDAsMCwxLDY1LDE0LjEyWiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NywzLjQ3LDAsMCwxLTMuNDItMy4xNkEzMC4zOSwzMC4zOSwwLDAsMCw4OS4wOCw1OC41N2EzMC40MiwzMC40MiwwLDAsMC05LjQsMS40OGwtMTUtNDZBNzguOCw3OC44LDAsMCwxLDE2Ny43OCw4NS4zOFoiLz48cGF0aCBjbGFzcz0iY2xzLTQiIGQ9Ik04My45MSw4Ni4yMmwwLDAtMjMtMzMuODlMOTMuMDUsNzcuN2wwLDBhNS44OSw1Ljg5LDAsMCwxLC42NS41Nyw2LjMyLDYuMzIsMCwxLDEtOS4yNCw4LjYyQTYuOTIsNi45MiwwLDAsMSw4My45MSw4Ni4yMloiLz48L3N2Zz4=",
+"vulnSeverityLow" =>
+"PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojMTk4NzU0O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzJfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTc5Ljg5LDYwQTMwLjM5LDMwLjM5LDAsMCwwLDY0LjcyLDcxYTMwLjA5LDMwLjA5LDAsMCwwLTUuNjQsMTQuNjksMy40NiwzLjQ2LDAsMCwxLTMuNDIsMy4xNUgxNC4xOGEzLjQzLDMuNDMsMCwwLDEtMy40My0zLjU5QTc4LjY3LDc4LjY3LDAsMCwxLDY1LDE0LjEyWiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NywzLjQ3LDAsMCwxLTMuNDItMy4xNkEzMC4zOSwzMC4zOSwwLDAsMCw4OS4wOCw1OC41N2EzMC40MiwzMC40MiwwLDAsMC05LjQsMS40OGwtMTUtNDZBNzguOCw3OC44LDAsMCwxLDE2Ny43OCw4NS4zOFoiLz48cGF0aCBjbGFzcz0iY2xzLTQiIGQ9Ik04My45MSw4Ni4yMmwwLDAtMjMtMzMuODlMOTMuMDUsNzcuN2wwLDBhNS44OSw1Ljg5LDAsMCwxLC42NS41Nyw2LjMyLDYuMzIsMCwxLDEtOS4yNCw4LjYyQTYuOTIsNi45MiwwLDAsMSw4My45MSw4Ni4yMloiLz48L3N2Zz4=",
+"severityMiddle" =>
+"PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZmZhNzI2O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzNfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTExMy40MywxNGwtMTUsNDZBMzAuMzIsMzAuMzIsMCwwLDAsNzkuODgsNjB2MEEzMC4zOSwzMC4zOSwwLDAsMCw2NC43Miw3MWEzMC4wOSwzMC4wOSwwLDAsMC01LjY0LDE0LjY5LDMuNDUsMy40NSwwLDAsMS0zLjQxLDMuMTVIMTQuMThhMy40MywzLjQzLDAsMCwxLTMuNDMtMy41OSw3OC42NSw3OC42NSwwLDAsMSw1NC03MS4xbDAtLjE1YTc5LjE2LDc5LjE2LDAsMCwxLDQ4LjcxLDBaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMTY3Ljc4LDg1LjM4YTMuNDQsMy40NCwwLDAsMS0zLjQzLDMuNmgtNDEuNmEzLjQ1LDMuNDUsMCwwLDEtMy40MS0zLjE2QTMwLjQ3LDMwLjQ3LDAsMCwwLDk4LjQ3LDYwLjA1bDE1LTQ2YTc4Ljg0LDc4Ljg0LDAsMCwxLDU0LjM1LDcxLjM0WiIvPjxwYXRoIGNsYXNzPSJjbHMtNCIgZD0iTTk1LjUsODEuOGgwTDg5LjI3LDQxLjMsODMsODEuOGgwYTcuODQsNy44NCwwLDAsMC0uMDguODYsNi4zMiw2LjMyLDAsMSwwLDEyLjYzLDBBNiw2LDAsMCwwLDk1LjUsODEuOFoiLz48L3N2Zz4=",
+"vulnSeverityMiddle" =>
+"PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZmZhNzI2O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzNfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTExMy40MywxNGwtMTUsNDZBMzAuMzIsMzAuMzIsMCwwLDAsNzkuODgsNjB2MEEzMC4zOSwzMC4zOSwwLDAsMCw2NC43Miw3MWEzMC4wOSwzMC4wOSwwLDAsMC01LjY0LDE0LjY5LDMuNDUsMy40NSwwLDAsMS0zLjQxLDMuMTVIMTQuMThhMy40MywzLjQzLDAsMCwxLTMuNDMtMy41OSw3OC42NSw3OC42NSwwLDAsMSw1NC03MS4xbDAtLjE1YTc5LjE2LDc5LjE2LDAsMCwxLDQ4LjcxLDBaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMTY3Ljc4LDg1LjM4YTMuNDQsMy40NCwwLDAsMS0zLjQzLDMuNmgtNDEuNmEzLjQ1LDMuNDUsMCwwLDEtMy40MS0zLjE2QTMwLjQ3LDMwLjQ3LDAsMCwwLDk4LjQ3LDYwLjA1bDE1LTQ2YTc4Ljg0LDc4Ljg0LDAsMCwxLDU0LjM1LDcxLjM0WiIvPjxwYXRoIGNsYXNzPSJjbHMtNCIgZD0iTTk1LjUsODEuOGgwTDg5LjI3LDQxLjMsODMsODEuOGgwYTcuODQsNy44NCwwLDAsMC0uMDguODYsNi4zMiw2LjMyLDAsMSwwLDEyLjYzLDBBNiw2LDAsMCwwLDk1LjUsODEuOFoiLz48L3N2Zz4=",
+"severityHigh" =>
+"PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZjE1YTI0O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzRfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE1Mi44MSw0Mi42NiwxMTMuNjgsNzEuMWEzMC4zNCwzMC4zNCwwLDAsMC0xNS4yMS0xMUEzMC4yOSwzMC4yOSwwLDAsMCw3OS44OSw2MHYwQTMwLjQsMzAuNCwwLDAsMCw1OS4wOCw4NS43M2EzLjQ1LDMuNDUsMCwwLDEtMy40MSwzLjE1SDE0LjE4YTMuNDQsMy40NCwwLDAsMS0zLjQzLTMuNTksNzguNjcsNzguNjcsMCwwLDEsNTQtNzEuMTFsMC0uMTRhNzguNzcsNzguNzcsMCwwLDEsODguMDgsMjguNjJaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMTY0LjM1LDg5aC00MS42YTMuNDcsMy40NywwLDAsMS0zLjQyLTMuMTYsMzAsMzAsMCwwLDAtNS42Ni0xNC43MkwxNTIuOCw0Mi42N2E3OC4xNyw3OC4xNywwLDAsMSwxNSw0Mi43MUEzLjQ0LDMuNDQsMCwwLDEsMTY0LjM1LDg5WiIvPjxwYXRoIGNsYXNzPSJjbHMtNCIgZD0iTTk0LjUsODYuMjJsMCwwLDIzLTMzLjg5TDg1LjM3LDc3LjdsMCwwYTcsNywwLDAsMC0uNjUuNTdBNi4zMiw2LjMyLDAsMCwwLDk0LDg2LjkxLDUuNjcsNS42NywwLDAsMCw5NC41LDg2LjIyWiIvPjwvc3ZnPg==",
+"vulnSeverityHigh" =>
+"PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZjE1YTI0O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzRfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE1Mi44MSw0Mi42NiwxMTMuNjgsNzEuMWEzMC4zNCwzMC4zNCwwLDAsMC0xNS4yMS0xMUEzMC4yOSwzMC4yOSwwLDAsMCw3OS44OSw2MHYwQTMwLjQsMzAuNCwwLDAsMCw1OS4wOCw4NS43M2EzLjQ1LDMuNDUsMCwwLDEtMy40MSwzLjE1SDE0LjE4YTMuNDQsMy40NCwwLDAsMS0zLjQzLTMuNTksNzguNjcsNzguNjcsMCwwLDEsNTQtNzEuMTFsMC0uMTRhNzguNzcsNzguNzcsMCwwLDEsODguMDgsMjguNjJaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMTY0LjM1LDg5aC00MS42YTMuNDcsMy40NywwLDAsMS0zLjQyLTMuMTYsMzAsMzAsMCwwLDAtNS42Ni0xNC43MkwxNTIuOCw0Mi42N2E3OC4xNyw3OC4xNywwLDAsMSwxNSw0Mi43MUEzLjQ0LDMuNDQsMCwwLDEsMTY0LjM1LDg5WiIvPjxwYXRoIGNsYXNzPSJjbHMtNCIgZD0iTTk0LjUsODYuMjJsMCwwLDIzLTMzLjg5TDg1LjM3LDc3LjdsMCwwYTcsNywwLDAsMC0uNjUuNTdBNi4zMiw2LjMyLDAsMCwwLDk0LDg2LjkxLDUuNjcsNS42NywwLDAsMCw5NC41LDg2LjIyWiIvPjwvc3ZnPg==",
+"severityCritical" =>
+"PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZDYzMTMxO30uY2xzLTN7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzVfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NSwzLjQ1LDAsMCwxLTMuNDEtMy4xNkEzMC40LDMwLjQsMCwwLDAsNzkuODksNjB2MEEzMC40LDMwLjQsMCwwLDAsNTkuMDgsODUuNzNhMy40NCwzLjQ0LDAsMCwxLTMuNDEsMy4xNUgxNC4xOWEzLjQ0LDMuNDQsMCwwLDEtMy40NC0zLjU5LDc4LjY1LDc4LjY1LDAsMCwxLDU0LTcxLjFsMC0uMTVBNzguNzksNzguNzksMCwwLDEsMTY3Ljc4LDg1LjM4WiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTkwLjYsODguNzF2MEwxMjkuODQsNzYuOWwtNDEtLjU2djBhNi4xOCw2LjE4LDAsMCwwLS44NiwwLDYuMzIsNi4zMiwwLDEsMCwxLjc2LDEyLjUxQTUuNTgsNS41OCwwLDAsMCw5MC42LDg4LjcxWiIvPjwvc3ZnPg==",
+"vulnSeverityCritical" =>
+"PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZDYzMTMxO30uY2xzLTN7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzVfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NSwzLjQ1LDAsMCwxLTMuNDEtMy4xNkEzMC40LDMwLjQsMCwwLDAsNzkuODksNjB2MEEzMC40LDMwLjQsMCwwLDAsNTkuMDgsODUuNzNhMy40NCwzLjQ0LDAsMCwxLTMuNDEsMy4xNUgxNC4xOWEzLjQ0LDMuNDQsMCwwLDEtMy40NC0zLjU5LDc4LjY1LDc4LjY1LDAsMCwxLDU0LTcxLjFsMC0uMTVBNzguNzksNzguNzksMCwwLDEsMTY3Ljc4LDg1LjM4WiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTkwLjYsODguNzF2MEwxMjkuODQsNzYuOWwtNDEtLjU2djBhNi4xOCw2LjE4LDAsMCwwLS44NiwwLDYuMzIsNi4zMiwwLDEsMCwxLjc2LDEyLjUxQTUuNTgsNS41OCwwLDAsMCw5MC42LDg4LjcxWiIvPjwvc3ZnPg=="
+]}
+
+{var $imgLogoMime = "image/svg+xml"}
+{var $imgLogo =
+"PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNzUwLjA2IDY0OC4wMyI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMxMDEwMTA7fS5jbHMtMntmaWxsOiNmMTVhMjQ7fTwvc3R5bGU+PC9kZWZzPjxnIGlkPSJWcnN0dmFfMiIgZGF0YS1uYW1lPSJWcnN0dmEgMiI+PGcgaWQ9IlZyc3R2YV8xLTIiIGRhdGEtbmFtZT0iVnJzdHZhIDEiPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTYyNS40NCw3NS41cS0xMS4yOC02LTIyLjgyLTExLjU5LTExLjM5LTUuNDktMjMtMTAuNTMtNC4zNi0xLjkyLTguNzctMy43NC03LjE1LTMtMTQuNC01LjgxYy0yLjE5LS44Ni00LjM3LTEuNy02LjU3LTIuNTJxLTguMzItMy4xNC0xNi43NC02LjA1Yy0xLjUtLjUyLTMtMS00LjUyLTEuNTNxLTkuMzktMy4xOC0xOC44OS02Yy0uODktLjI3LTEuOC0uNTUtMi43LS44MXEtMTAuMzItMy4wOS0yMC44LTUuODJsLTEtLjI4cS0xMS0yLjg1LTIyLjExLTUuMzJjLS4xMywwLS4yNi0uMDYtLjQtLjA5cS0xMC44Ny0yLjQzLTIxLjkzLTQuNDhsLTEuNjMtLjI5UTQyOC43MSw4LjY3LDQxOC4yLDcuMTFsLTIuNjQtLjRxLTEwLTEuNDQtMjAuMDktMi41OEwzOTIsMy43NVEzODIuMzMsMi43LDM3Mi41NSwybC00LS4zUTM1OSwxLDM0OS40OC41OEMzNDgsLjUxLDM0Ni41Ni40NSwzNDUuMDkuNDFjLTYuMjQtLjIyLTEyLjUyLS4zNS0xOC44LS40aC00LjU1UTMxMi4zMiwwLDMwMywuMjhjLTEuNDksMC0zLC4wOC00LjQ3LjE0cS05LjUuMzMtMTguOTMsMWwtNC4xOC4yOWMtNi40NS40NS0xMi45LDEtMTkuMjksMS42Ni0xLjIzLjEyLTIuNDUuMjUtMy42OC4zOXEtMTAsMS0xOS44NCwyLjQzbC0zLC40MlEyMTkuMjgsOCwyMDksOS44NGwtMiwuMzZxLTEwLjg0LDEuOTQtMjEuNTQsNC4yNmwtLjg0LjE3UTE3My40OSwxNywxNjIuNDksMTkuODRMMTYyLDIwcS0xMC43NiwyLjczLTIxLjM4LDUuODRsLTIuMTMuNjNjLTYuNTUsMS45Mi0xMy4wNiw0LTE5LjUyLDYuMWwtMy44OCwxLjNxLTguNzcsMy0xNy40Niw2LjE4Yy0yLC43Mi0zLjkzLDEuNDYtNS44OCwyLjItNS4wOCwyLTEwLjE1LDQtMTUuMTcsNi0yLjY4LDEuMS01LjM2LDIuMjEtOCwzLjM2UTU2Ljg4LDU2LjU2LDQ1LjQ4LDYyVDIyLjY0LDczLjM3UTExLjE4LDc5LjM0LDAsODUuNzhxMCwxMywuNTMsMjUuOXQxLjUyLDI1LjU1cTEsMTIuNjksMi41LDI1LjI0Yy4yOSwyLjU1LjYxLDUuMS45NCw3LjY0UTYuNjIsMTc4Ljc3LDgsMTg3LjM0Yy4yNiwxLjczLjU0LDMuNDUuODIsNS4xOHExLjYyLDkuNzEsMy41MSwxOS4zMWwuNiwzcTIuMTQsMTAuNjIsNC42MywyMS4xMUwxNy44LDIzN3EyLjY1LDExLjEsNS42NywyMmMuMDYuMTkuMS4zNy4xNi41NVEyNi42LDI3MC4zNSwzMCwyODFjLjIuNjMuNCwxLjI3LjYxLDEuOXEzLjE1LDEwLDYuNjUsMTkuOGMuMzUsMSwuNywyLDEuMDcsMywyLjIzLDYuMiw0LjU1LDEyLjM4LDcsMTguNDkuNTEsMS4yOSwxLDIuNTcsMS41MywzLjg1cTMuNTMsOC43OSw3LjMyLDE3LjQzLDEsMi4yMiwyLDQuNDMsMy42OSw4LjM3LDcuNjYsMTYuNThjLjc2LDEuNjIsMS41NCwzLjIyLDIuMzMsNC44M3EzLjkzLDgsOC4wOCwxNS45MiwxLjI5LDIuNDksMi42NCw1LDQuMTYsNy44MSw4LjU1LDE1LjQ5Yy45NCwxLjYzLDEuODgsMy4yNywyLjg1LDQuOXE0LjE1LTQuMTUsOC40Ny04LjEyaDBxNC4xNy0zLjg3LDguNDgtNy41N2gwcTguNjMtNy40NywxNy43OS0xNC4zMnQxOC41Ni0xM3E5LjQ1LTYuMTMsMTkuMzMtMTEuNjN0MjAuMDgtMTAuMjlxMTAuMjItNC44MywyMC44My04Ljk0Yy0yLjIyLTMuOTMtNC40LTcuODktNi41LTExLjg4LTEuNDYtMi43MS0yLjg3LTUuNDMtNC4yNy04LjE2cS0zLjE2LTYuMjEtNi4xNS0xMi41MWMtMS4yNC0yLjYyLTIuNDctNS4yNC0zLjY2LTcuODhxLTMuMDctNi43NS02LTEzLjYyYy0xLTIuMzYtMi00Ljc1LTIuOTMtNy4xNHEtMy4wOC03LjYxLTUuOS0xNS4zNWMtLjcxLTEuOTItMS40LTMuODYtMi4wOC01Ljc5cS0zLjE0LTguOTEtNi0xOGMtLjM3LTEuMTctLjcyLTIuMzUtMS4wNy0zLjU0UTE1My45NCwyMjQsMTUxLjEyLDIxM2ExLjU1LDEuNTUsMCwwLDEtLjA1LS4yM3EtMi43Ny0xMC45LTUuMDktMjJjLS40Ny0yLjI2LS45Mi00LjUxLTEuMzYtNi43OHEtMS41My03Ljg3LTIuODItMTUuOCw3LjU1LTIuODUsMTUuMjItNS40NWMyLjEyLS43Myw0LjI1LTEuNDQsNi4zOS0yLjE1cTEwLjgyLTMuNSwyMS44MS02LjU1aDBxMTAuODgtMywyMS45My01LjU0bDMuOTQtLjlxOS0yLDE4LjE3LTMuNjZjMi4xNC0uNDEsNC4yOS0uNzgsNi40NC0xLjE0cTcuODYtMS4zNCwxNS44MS0yLjQzLDQtLjU3LDguMDYtMSw3LjE0LS44OCwxNC4zMi0xLjU1LDQuNTMtLjQ0LDkuMDgtLjc2LDYuNzEtLjUxLDEzLjQ1LS44NGMzLjItLjE2LDYuNC0uMjksOS42Mi0uMzhxNi40OS0uMjEsMTMuMDYtLjIzYzEsMCwxLjkzLDAsMi44OSwwaDJsNC44OSwwcTYuNTcuMDksMTMuMDkuMzRjMy4yLjEzLDYuMzkuMjcsOS41Ny40NnE2Ljc5LjM4LDEzLjU0LDFjMywuMjMsNiwuNTEsOSwuODIsNC44NS40OSw5LjY3LDEsMTQuNDgsMS42OCwyLjYzLjMyLDUuMjYuNjksNy44NywxLjA4LDUuMzguNzgsMTAuNzUsMS42NCwxNi4wNiwyLjU5LDIuMDcuMzcsNC4xMi43Niw2LjE3LDEuMTQsNi4yMiwxLjIsMTIuNDEsMi40OSwxOC41NSwzLjkyLDEuMTguMjYsMi4zNS41MywzLjUyLjgzcTExLjA3LDIuNiwyMS45NCw1LjcybC41OS4xN3ExMC42OCwzLjA2LDIxLjE4LDYuNTdjMi40OS44Myw1LDEuNjcsNy40MywyLjU1LDQuNzQsMS42Nyw5LjQ3LDMuNDEsMTQuMTQsNS4yMnExMC42OCw0LjA5LDIxLjExLDguNjdsLjI1LjExcTEwLjcsNC42OSwyMS4xMiw5Ljg2dDIwLjg1LDEwLjkycTEwLjQyLDUuNzMsMjAuNTQsMTJ0MjAuMiwxMy4wOXE4Ljg1LDYsMTcuNDIsMTIuNDFjLjguNiwxLjYxLDEuMiwyLjQsMS44MS4xMi0uNDkuMjMtMSwuMzQtMS40NXEyLjY1LTExLDQuOS0yMi4yYTMuODksMy44OSwwLDAsMCwuMDktLjQ3cTIuMTktMTAuODQsNC0yMS44M2MuMTQtLjkuMjktMS44MS40My0yLjdxMS41OS05LjgxLDIuODctMTkuNzFjLjI0LTEuNzMuNDUtMy40NS42Ny01LjE4cTEuNTEtMTIuNTYsMi41OC0yNS4yOFQ2NDcuNCwxMTRxLjU3LTEyLjg5LjYzLTI1LjkxUTYzNi44Nyw4MS41Nyw2MjUuNDQsNzUuNVoiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik02MDkuMDYsMjc5LjM2aDBxLTUuNjItNC40MS0xMS4zNy04LjYtOS41NC03LTE5LjQ3LTEzLjUyLTkuNzYtNi40NC0xOS44Ny0xMi4zNnQtMjAuMjYtMTEuMjVxLTEwLjE2LTUuMzItMjAuNjEtMTAuMTQtOC45My00LjEyLTE4LjA2LTcuODloMGwtMi44NC0xLjE1cS0yLjg1LDExLTYuMTcsMjEuODdjLS4yMS43MS0uNDMsMS40MS0uNjQsMi4xcS0zLjA2LDkuNzktNi40NywxOS40Yy0uNTIsMS40OC0xLDIuOTQtMS41OCw0LjM4cS0zLjA3LDguNDYtNi40NSwxNi43NC0xLjE3LDIuOS0yLjM4LDUuNzQtMy4xNSw3LjU3LTYuNTgsMTUtMS40OSwzLjI3LTMsNi41MS0zLjMyLDctNi44NCwxMy44NGMtMS4xNywyLjI5LTIuMzUsNC41Ni0zLjU4LDYuODMtMi4zNCw0LjQyLTQuNzUsOC44Mi03LjI0LDEzLjE2LTEuMjksMi4yOC0yLjYxLDQuNTUtMy45NCw2Ljc5cS0zLjgxLDYuNDktNy44NSwxMi44NWMtMS4zNCwyLjE3LTIuNzMsNC4zMi00LjEzLDYuNDYtMi44Miw0LjMyLTUuNjksOC42LTguNjUsMTIuODQtMS4zNSwxLjk1LTIuNzEsMy44OS00LjEsNS44MnEtNC43OSw2LjcxLTkuNzksMTMuMjMtMS44NSwyLjQzLTMuNzUsNC44My01LjU4LDcuMTMtMTEuMzksMTRjLTEsMS4xNC0xLjkzLDIuMjgtMi45MiwzLjQxcS02LjcxLDcuODUtMTMuNzUsMTUuNDJMMzc0LDQzNy4xMXEtNy43NCw4LjI4LTE1Ljg2LDE2LjIyYy0uNS41LTEsMS0xLjUsMS40NnEtNy40Myw3LjIzLTE1LjE2LDE0LjEzYy0yLjIsMi00LjQ0LDMuOTUtNi42OCw1Ljg4cS01LjMxLDQuNjItMTAuNzUsOS01LjU2LTQuNTQtMTEtOS4yNWMtMi4xNS0xLjg3LTQuMy0zLjc1LTYuNDItNS42NnEtOC03LjE3LTE1Ljc2LTE0LjcxbC0uOS0uODhxLTguMTMtNy45My0xNS44Ni0xNi4yMmMtLjctLjczLTEuMzktMS40Ny0yLjA4LTIuMjFxLTYuNjQtNy4xOC0xMy0xNC42M2MtMS4yNC0xLjQ1LTIuNDgtMi45LTMuNjktNC4zNnEtNS40My02LjQ1LTEwLjYyLTEzLjFjLTEuNTQtMS45NS0zLTMuOS00LjU1LTUuODhxLTQuNTgtNi05LTEyLjE3Yy0xLjY2LTIuMzEtMy4zLTQuNjQtNC45MS03cS0xMC45MywzLjg3LTIxLjQzLDguNTlUMTg0LjQyLDM5Ni41cS05LjkzLDUuNDItMTkuMzYsMTEuNnQtMTguMzgsMTMuMDdoMHEtOSw2LjkzLTE3LjM5LDE0LjU1LTQuNjUsNC4yLTkuMTEsOC42MmMtMi40NiwyLjQyLTQuODcsNC45LTcuMjYsNy40MnE1LjI1LDcuNjksMTAuNzIsMTUuMjNjLjg3LDEuMiwxLjczLDIuMzksMi42MSwzLjU4UTEzMiw0NzguNCwxMzgsNDg2cTEuMDgsMS40MSwyLjIyLDIuODIsNi4zMSw4LDEyLjg5LDE1Ljc3Yy41My42NCwxLjA3LDEuMjgsMS42MiwxLjkxcTcsOC4yNCwxNC4yNiwxNi4yM2MuMjcuMjkuNTMuNTkuODEuODhxNy42NSw4LjQsMTUuNjMsMTYuNTRhMS43OSwxLjc5LDAsMCwwLC4yMy4yNXE3LjgxLDgsMTUuOTEsMTUuNzFsMS41MywxLjQ0YzUsNC43MiwxMCw5LjM1LDE1LjEzLDEzLjksMSwuOTIsMi4wNiwxLjgyLDMuMDksMi43MXE3LDYuMTQsMTQuMDcsMTJjMS42MywxLjM2LDMuMjYsMi43MSw0LjkxLDRxNi4yOCw1LjEyLDEyLjcsMTAuMDYsMy41MSwyLjczLDcuMDcsNS4zOSwxMC4xMyw3LjYxLDIwLjU0LDE0Ljh0MjEuMzQsMTQuMTRRMzEyLjgxLDY0MS41NCwzMjQsNjQ4aDBxMTEuMTktNi40OSwyMi4wOS0xMy40MnQyMS4zMy0xNC4xNHExMC40My03LjIsMjAuNTQtMTQuOGMxLjQ5LTEuMTIsMy0yLjI0LDQuNDYtMy4zOHE3Ljc2LTUuOTEsMTUuMzItMTIuMDdjLjgxLS42NCwxLjYtMS4zLDIuNC0ycTguNC02Ljg3LDE2LjU4LTE0LjA4YTguNTcsOC41NywwLDAsMCwuNjYtLjU4cTguNTItNy40OSwxNi43Ni0xNS4yN2wuOC0uNzZxNy44Ni03LjQ0LDE1LjQ0LTE1LjE0Yy42OS0uNjYsMS4zNS0xLjM0LDItMnE3LTcuMTIsMTMuNzMtMTQuNDdjMS0xLjA2LDItMi4xMywyLjk0LTMuMnE2LjI0LTYuODYsMTIuMjQtMTMuODdjMS4yNC0xLjQxLDIuNDQtMi44NCwzLjY0LTQuMjdxNS42LTYuNiwxMS0xMy4zNywyLjEtMi42MSw0LjEzLTUuMjIsNS4wNi02LjQyLDkuOTEtMTNjMS40OS0yLDMtNCw0LjQyLTZxNC41OS02LjMxLDktMTIuNzVjMS41My0yLjIxLDMtNC40NCw0LjU0LTYuNjcsMi44LTQuMTcsNS41Ni04LjM5LDguMjctMTIuNjIsMS41MS0yLjM4LDMtNC43Niw0LjQ5LTcuMTVxMy45MS02LjMsNy42OC0xMi43MWMxLjQ2LTIuNDcsMi44OS00Ljk0LDQuMzEtNy40M3EzLjY3LTYuNDIsNy4yMS0xMi45M2MxLjM0LTIuNSwyLjY4LTUsNC03LjUzcTMuNS02LjYzLDYuODItMTMuMzYsMS44Mi0zLjY4LDMuNTktNy4zOSwzLjM0LTYuOTQsNi41MS0xNGMxLjA2LTIuMzQsMi4xLTQuNjcsMy4xMS03cTMuMjQtNy40LDYuMjgtMTQuODVjLjg2LTIuMTMsMS43Mi00LjI4LDIuNTctNi40M3EzLjEyLTcuOTEsNi0xNS45MmMuNjgtMS44NiwxLjM1LTMuNzEsMi01LjU4cTMtOC41Nyw1Ljg0LTE3LjIzUTYxMi44OSwyODIuMzUsNjA5LjA2LDI3OS4zNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDkyLjY3LDMyMy4xcTAsMjcuMjQtNi43LDQ5LjU3dC0xOS42NSwzOC40MWE4OC43Myw4OC43MywwLDAsMS0zMi4xNiwyNVExMDE1LDQ0NSw5OTAsNDQ1YTExOSwxMTksMCwwLDEtMjUuOS0yLjY4LDEyMy43OSwxMjMuNzksMCwwLDEtMjMuMjMtNy41OXY4OC40M0g4NzQuMjhWMjEzLjY4cTguOTMtMi42OSwyMC41NC01LjE0dDI0LjM0LTQuMjRxMTIuNzQtMS43OCwyNS45LTIuOTF0MjUuMjQtMS4xMXEyOSwwLDUxLjgxLDguNzF0MzguNCwyNC41NmExMDUuMzksMTA1LjM5LDAsMCwxLDIzLjksMzguNjNRMTA5Mi42NiwyOTUsMTA5Mi42NywzMjMuMVptLTY3Ljg4LDEuNzhxMC0zMC44MS0xMy44NS00OS4zNVQ5NjkuODUsMjU3cS04Ljk0LDAtMTYuNTIuNjdjLTUuMDcuNDQtOS4yNCwxLTEyLjUxLDEuNTZWMzc5LjM3YTU3LjkyLDU3LjkyLDAsMCwwLDE2LjMsNi43LDc4LjM4LDc4LjM4LDAsMCwwLDIwLjMyLDIuNjhRMTAyNC43OCwzODguNzUsMTAyNC43OSwzMjQuODhaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTEyOC40LDMyNC44OHEwLTMxLjI1LDkuNi01NC43MXQyNS4yMy0zOS4wOGExMDUuMDksMTA1LjA5LDAsMCwxLDM2LTIzLjY3LDExMi41OCwxMTIuNTgsMCwwLDEsNDEuNzYtOHE1MCwwLDc5LDMwLjZ0MjksOTBxMCw1LjgtLjQ0LDEyLjczdC0uOSwxMi4yOGgtMTUxcTIuMjIsMjAuNTUsMTkuMiwzMi42MXQ0NS41NiwxMi4wNWExOTEuODMsMTkxLjgzLDAsMCwwLDM2LTMuMzVxMTcuNjQtMy4zNSwyOC44MS04LjI2bDguOTMsNTRhOTAuOTMsOTAuOTMsMCwwLDEtMTQuMjksNS4zNiwxODYuMjgsMTg2LjI4LDAsMCwxLTE5Ljg4LDQuNjlxLTExLDItMjMuNDQsMy4zNWEyMzUuNTksMjM1LjU5LDAsMCwxLTI1LDEuMzRxLTMxLjcyLDAtNTUuMTYtOS4zOHQtMzguODYtMjUuNjhhMTAyLDEwMiwwLDAsMS0yMi43OC0zOC42M0ExNTMuMTEsMTUzLjExLDAsMCwxLDExMjguNCwzMjQuODhabTE1Ni4zMS0yNS40NWE2OS4xOSw2OS4xOSwwLDAsMC0yLjktMTYuNTMsNDEuMzYsNDEuMzYsMCwwLDAtNy41OS0xNC4yOSw0MC41LDQwLjUsMCwwLDAtMTMtMTAuMjdxLTcuODItNC0xOS40Mi00LTExLjE3LDAtMTkuMjEsMy43OWE0MCw0MCwwLDAsMC0xMy40LDEwLjA1LDQ1LDQ1LDAsMCwwLTguMjYsMTQuNTIsOTQuNTUsOTQuNTUsMCwwLDAtNC4yNCwxNi43NVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMzk1LjkyLDIxMy42OHExNy00LjkyLDQzLjc3LTkuMTZhMzYwLjYzLDM2MC42MywwLDAsMSw1Ni4yNy00LjI0cTI5LjkzLDAsNDkuOCw3LjgxdDMxLjQ5LDIyLjExYTg2LjQyLDg2LjQyLDAsMCwxLDE2LjUyLDMzLjk0LDE4MC45MSwxODAuOTEsMCwwLDEsNC45MSw0My43N1Y0NDAuNTZoLTY2LjU0VjMxNnEwLTMyLjE2LTguNDktNDUuNTVUMTQ5MS45NCwyNTdxLTcuMTQsMC0xNS4xOC42N2MtNS4zNi40NC0xMC4xMywxLTE0LjMsMS41NlY0NDAuNTZoLTY2LjU0WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE2NTIuMjcsMTQ3LjEzbDY2LjU1LTEwLjcydjY5LjIzaDc5Ljk0VjI2MWgtNzkuOTR2ODIuNjJxMCwyMSw3LjM3LDMzLjV0MjkuNywxMi41YTEyNy4yOCwxMjcuMjgsMCwwLDAsMjIuMTEtMiwxMTMuMjIsMTEzLjIyLDAsMCwwLDIwLjc2LTUuNThsOS4zOCw1MS44MWExODguNjQsMTg4LjY0LDAsMCwxLTI2Ljc5LDguNDhxLTE0Ljc0LDMuNTctMzYuMTgsMy41OC0yNy4yNiwwLTQ1LjExLTcuMzdUMTY3MS40OCw0MThxLTEwLjczLTEzLjE3LTE1LTMxLjkzYTE4Ny44MiwxODcuODIsMCwwLDEtNC4yNS00MS41M1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xODI4LjI0LDMyNC44OHEwLTMxLjI1LDkuNi01NC43MXQyNS4yMy0zOS4wOGExMDUuMTMsMTA1LjEzLDAsMCwxLDM2LTIzLjY3LDExMi41LDExMi41LDAsMCwxLDQxLjc2LThxNTAsMCw3OSwzMC42dDI5LDkwYzAsMy44Ny0uMTYsOC4xMi0uNDUsMTIuNzNzLS42LDguNzEtLjg5LDEyLjI4aC0xNTFxMi4yMywyMC41NSwxOS4yLDMyLjYxdDQ1LjU2LDEyLjA1YTE5MS42NywxOTEuNjcsMCwwLDAsMzYtMy4zNXExNy42NC0zLjM1LDI4LjgxLTguMjZsOC45Myw1NGE5MC45Myw5MC45MywwLDAsMS0xNC4yOSw1LjM2LDE4Ni42NSwxODYuNjUsMCwwLDEtMTkuODcsNC42OXEtMTEsMi0yMy40NSwzLjM1YTIzNS41OSwyMzUuNTksMCwwLDEtMjUsMS4zNHEtMzEuNzMsMC01NS4xNi05LjM4dC0zOC44Ni0yNS42OGExMDEuODEsMTAxLjgxLDAsMCwxLTIyLjc3LTM4LjYzQTE1Mi44MywxNTIuODMsMCwwLDEsMTgyOC4yNCwzMjQuODhabTE1Ni4zMS0yNS40NWE2OS4xOSw2OS4xOSwwLDAsMC0yLjktMTYuNTMsNDEuMzYsNDEuMzYsMCwwLDAtNy41OS0xNC4yOSw0MC41Nyw0MC41NywwLDAsMC0xMy0xMC4yN3EtNy44My00LTE5LjQzLTQtMTEuMTcsMC0xOS4yMSwzLjc5YTM5Ljg1LDM5Ljg1LDAsMCwwLTEzLjM5LDEwLjA1LDQ1LjA2LDQ1LjA2LDAsMCwwLTguMjcsMTQuNTIsOTQuNTUsOTQuNTUsMCwwLDAtNC4yNCwxNi43NVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yMjM3LjM0LDI2NC41OXEtOC45NC0yLjIzLTIxLTQuNjlhMTMwLjM0LDEzMC4zNCwwLDAsMC0yNS45MS0yLjQ2LDEyMS4xMywxMjEuMTMsMCwwLDAtMTUsMS4xMiw4Ny42OSw4Ny42OSwwLDAsMC0xMy4xNywyLjQ2VjQ0MC41NmgtNjYuNTVWMjE4LjE0QTQwMS4zNiw0MDEuMzYsMCwwLDEsMjEzOCwyMDYuMzFxMjQuMzMtNS41OCw1NC4yNi01LjU5LDUuMzYsMCwxMi45NS42N3QxNS4xOSwxLjc5cTcuNTksMS4xMywxNS4xOCwyLjY4YTcxLjkxLDcxLjkxLDAsMCwxLDEyLjk1LDMuOFoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yMjY0LjE0LDMyNC44OHEwLTMxLjI1LDkuNi01NC43MVQyMjk5LDIzMS4wOWExMDUsMTA1LDAsMCwxLDM2LTIzLjY3LDExMi40OSwxMTIuNDksMCwwLDEsNDEuNzUtOHE1MCwwLDc5LjA2LDMwLjZ0MjksOTBjMCwzLjg3LS4xNiw4LjEyLS40NSwxMi43M3MtLjYsOC43MS0uODksMTIuMjhoLTE1MXEyLjI0LDIwLjU1LDE5LjIsMzIuNjF0NDUuNTYsMTIuMDVhMTkxLjc1LDE5MS43NSwwLDAsMCwzNS45NS0zLjM1cTE3LjY0LTMuMzUsMjguODEtOC4yNmw4LjkzLDU0YTkwLjkzLDkwLjkzLDAsMCwxLTE0LjI5LDUuMzYsMTg2LjI4LDE4Ni4yOCwwLDAsMS0xOS44OCw0LjY5cS0xMC45MywyLTIzLjQ0LDMuMzVhMjM1LjU5LDIzNS41OSwwLDAsMS0yNSwxLjM0cS0zMS43MywwLTU1LjE2LTkuMzh0LTM4Ljg2LTI1LjY4YTEwMS44MSwxMDEuODEsMCwwLDEtMjIuNzctMzguNjNBMTUyLjgzLDE1Mi44MywwLDAsMSwyMjY0LjE0LDMyNC44OFptMTU2LjMxLTI1LjQ1YTY5LjE5LDY5LjE5LDAsMCwwLTIuOS0xNi41Myw0MS4zNiw0MS4zNiwwLDAsMC03LjU5LTE0LjI5QTQwLjU3LDQwLjU3LDAsMCwwLDIzOTcsMjU4LjM0cS03LjgzLTQtMTkuNDMtNC0xMS4xNywwLTE5LjIxLDMuNzlhNDAsNDAsMCwwLDAtMTMuNCwxMC4wNSw0NS4yMiw0NS4yMiwwLDAsMC04LjI2LDE0LjUyLDk0LjU1LDk0LjU1LDAsMCwwLTQuMjQsMTYuNzVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMjc1MC4wNiwzMjMuMXEwLDI3LjI0LTYuNyw0OS41N3QtMTkuNjUsMzguNDFhODguNzMsODguNzMsMCwwLDEtMzIuMTYsMjVxLTE5LjIyLDguOTMtNDQuMjIsOC45M2ExMTksMTE5LDAsMCwxLTI1LjktMi42OCwxMjMuNjksMTIzLjY5LDAsMCwxLTIzLjIyLTcuNTl2ODguNDNoLTY2LjU1VjIxMy42OHE4LjkzLTIuNjksMjAuNTQtNS4xNHQyNC4zNS00LjI0cTEyLjcyLTEuNzgsMjUuOS0yLjkxdDI1LjIzLTEuMTFxMjksMCw1MS44MSw4LjcxdDM4LjQxLDI0LjU2YTEwNS4zNywxMDUuMzcsMCwwLDEsMjMuODksMzguNjNRMjc1MC4wNiwyOTUsMjc1MC4wNiwzMjMuMVptLTY3Ljg5LDEuNzhxMC0zMC44MS0xMy44NC00OS4zNVQyNjI3LjI0LDI1N3EtOC45NCwwLTE2LjUzLjY3Yy01LjA2LjQ0LTkuMjMsMS0xMi41LDEuNTZWMzc5LjM3YTU3Ljc5LDU3Ljc5LDAsMCwwLDE2LjMsNi43LDc4LjM4LDc4LjM4LDAsMCwwLDIwLjMyLDIuNjhRMjY4Mi4xNywzODguNzUsMjY4Mi4xNywzMjQuODhaIi8+PC9nPjwvZz48L3N2Zz4="}
+
+<!DOCTYPE html>
+<html lang="cs">
+
+  <head>
+    <meta charset="utf-8" />
+    <title>{if isset($title)}{$title}{else}Report PENTEREP{/if}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+<!-- Definice vlastních stylů -->
+<style n:syntax="double">
+  h3,
+  h4,
+  h5 {
+    margin-bottom: 0px;
+  }
+
+  p,
+  ul {
+    margin-top: 4px;
+    text-align: justify;
+  }
+
+  .logo {
+    margin-top: 20px;
+    max-height: 40px;
+    max-width: 200px;
+  }
+
+  .section1 h1,
+  .section1 h2,
+  .section1 h3 {
+    text-align: center;
+    margin-top: 6px;
+  }
+
+  .section6 h4 {
+    border-bottom: 1px solid #333;
+  }
+
+  .graph {
+    font-size: 1rem;
+    display: inline;
+  }
+
+  .img-severity {
+    width: 100px;
+  }
+
+  /* Definice barev */
+  .section4 .severity-info {
+    color: blue;
+  }
+
+  .section4 .severity-low {
+    color: green;
+  }
+
+  .section4 .severity-middle {
+    color: orange;
+  }
+
+  .section4 .severity-high {
+    color: red;
+  }
+
+  .section4 .severity-critical {
+    color: darkred;
+  }
+
+  .section4 .bg-graph {
+    color: #FF9551;
+  }
+</style>
+
+  </head>
+
+  <body>
+
+<!-- Definice hlavičky a patičky stránek -->
+<htmlheader name="header-title-page">
+  <sethtmlpageheader name="header-title-page" value="off"></sethtmlpageheader>
+  <htmlpagefooter name="footer-title-page"></htmlpagefooter>
+  <sethtmlpagefooter name="footer-title-page" value="off"></sethtmlpagefooter>
+
+  <!-- Titulní stránka -->
+  <div>
+    <div class="page section1">
+      <h1 style="padding-top:150px;">Web Application Security Test Report</h1>
+      <div style="height: 150px;"></div>
+      <hr />
+      <h2>{$report->getProjectName()}</h2>
+      <h2>{$report->getProjectUrl()}</h2>
+      <hr />
+      <div style="height: 150px;"></div>
+      <h3>{$report->getReportCreateDate()}, verze {$report->getReportVersion()}</h3>
+      <div style="height: 100px;"></div>
+      <h3>{$report->getReportCreatorName()}</h3>
+      <h3>{$report->getReportOwnerName()}</h3>
+      <div style="text-align: center">
+        <img class="logo" src="data:{$imgLogoMime};base64,{$imgLogo}">
+      </div>
+    </div>
+    <pagebreak />
+
+    <!-- Obsah -->
+    <div class="page section2">
+      <tocpagebreak toc-prehtml="&lt;h2&gt;1 Table of Contents&lt;/h2&gt;" toc-posthtml="" links="ON" toc-sheet-size="A4" toc-resetpagenum="0" resetpagenum="0" toc-pageselector="toc" outdent="-20mm" toc-bookmarktext="1. Obsah dokumentu" supress="0"></tocpagebreak>
+    </div>
+
+    <!-- Definice hlavičky a patičky ostatních stránek -->
+    <htmlheader name="header-page">
+      <sethtmlpageheader name="header-page" value="off"></sethtmlpageheader>
+      <htmlpagefooter name="footer-page" n:syntax="double">Page {PAGENO} from {nbpg}</htmlpagefooter>
+      <sethtmlpagefooter name="footer-page" value="on"></sethtmlpagefooter>
+
+      <!-- Popis dokumentu-->
+      <div class="page section3">
+        <tocentry content="2 Description of the Document" />
+        <h2>2 Description of the Document</h2>
+        <p>This document contains the results of a penetration test commissioned by {$report->getReportOwnerName()}. The purpose of the penetration test was to verify the security functionality of the web application {$report->getProjectName()} in practice. The penetration test was conducted at an anonymous level, without knowledge of the application's source code. The consultant from {$report->getReportOwnerName()} performing the test had only limited knowledge of the customer's environment and primarily relied on information readily available to any Internet user. The testing aimed to uncover the potential for intrusion into the application (and other related elements, such as databases on the internal network) by a 'random' attacker (known as an 'outsider'), who has no understanding of the structure and content of the application and merely 'tries their luck'.</p>
+        <p>The document is divided into several parts:
+        <ul>
+          <li><b>Management Summary</b> - Concise Overview of Test Progress Alongside Results.</li>
+          <li><b>Test Description</b> - Description of the Test Methodology.</li>
+          <li><b>Found Facts</b> - nedostatky a další významné informace zjištěné během provádění testu.</li>
+        </ul>
+        </p>
+        <p>This report describes the findings made during the tests and the recommendations resulting from them.</p>
+      </div>
+      <pagebreak />
+      <htmlpagefooter name="footer" n:syntax="double">2 page {PAGENO} from {nbpg}</htmlpagefooter>
+
+      <!-- Manažerské shrnutí -->
+      <div class="page section4">
+        <tocentry content="3 Management Summary" />
+        <h2>3 Management Summary</h2>
+        {var $nodes = $report->getFoundVulnerabilities()}
+
+        <tocentry content="3.1 Summary of Findings by Severity" level="1" />
+        <h3>3.1 Summary of Findings by Severity</h3>
+        <table>
+          {foreach $nodes->getBySeverity() as $vulnerabilitiesGroupEntity}
+          <tr>
+            <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getSeverityName()}</td>
+            <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getCount()}</td>
+            <td class="graph severity-{$vulnerabilitiesGroupEntity->getSeverityCode()}">{for $i = 0; $i < $vulnerabilitiesGroupEntity->getCount(); $i++}█{/for}</td>
+          </tr>
+          {/foreach}
+        </table>
+
+        <tocentry content="3.2 Summary of Findings by Category" level="1" />
+        <h3>3.2 Summary of Findings by Category</h3>
+        <table>
+          {foreach $nodes->getByCategory() as $vulnerabilitiesGroupEntity}
+          <tr>
+            <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getSeverityName()}</td>
+            <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getCount()}</td>
+            <td class="graph bg-graph">{for $i = 0; $i < $vulnerabilitiesGroupEntity->getCount(); $i++}█{/for}</td>
+          </tr>
+          {/foreach}
+        </table>
+
+        <tocentry content="3.3 Key Findings" level="1" />
+        <h3>3.3 Key Findings</h3>
+        <p>{$report->getTestingMainFindings()}</p>
+
+        <tocentry content="3.4 Conclusion" level="1" />
+        <h3>3.4 Conclusion</h3>
+        <p>{$report->getTestingConclusions()}</p>
+
+        <div n:if="$report->getTestingScore()" class="text-center">
+          <img class="img-severity" src="data:{$imgSeverityMime};base64,{$imgSeverity[$report->getTestingScore()]}">
+        </div>
+      </div>
+      <pagebreak />
+
+      <!-- Popis testu-->
+      <div class="page section5">
+        <tocentry content="4 Description and Progress of the Test" />
+        <h2>4 Description and Progress of the Test</h2>
+
+        <tocentry content="4.1 Subject of the Test" level="1" />
+        <h3>4.1 Subject of the Test</h3>
+        <p n:if="!$report->getTestingSubjectDescription()">
+          The subject of the test was the web application <b>{$report->getProjectName()}</b> operated on the domain <b>{$report->getProjectUrl()}</b>.
+        </p>
+        <p n:if="$report->getTestingSubjectDescription()">{$report->getTestingSubjectDescription()}</p>
+
+        <tocentry content="4.2 Testing Conditions and Limitations" level="1" />
+        <h3>4.2 Testing Conditions and Limitations</h3>
+        <p>{$report->getTestingConditions()}</p>
+
+        <tocentry content="4.3 The Testing Methodology" level="1" />
+        <h3>4.3 The Testing Methodology</h3>
+        <p>The tests were conducted through manual testing according to the following methodologies and standards:</p>
+        <ul>
+          {foreach $report->getTestingModules() as $module}
+          <li>{$module->getName()}</li>
+          {/foreach}
+        </ul>
+
+        <tocentry content="4.4 Contacts" level="1" />
+        <h3>4.4 Contacts</h3>
+        {foreach $report->getOwnerContacts() as $contact}
+        <p>
+          Name: {$contact->getName()}<br>
+          Role: {$contact->getRole()}<br>
+          E-mail: {$contact->getEmail()}<br>
+          Phone: {$contact->getPhone()}
+        </p>
+        {/foreach}
+      </div>
+      <pagebreak />
+
+      <!-- Detaily nálezů -->
+      {var $firstPage = true}
+      {var $categoryNo = 1}
+      {foreach $report->getFoundVulnerabilities()->getByCategory() as $vulnerabilityGroupEntity}
+      {var $findInCategoryNo = 1}
+      {var $firstNodeGroup = []}
+      {var $node = $vulnerabilityGroupEntity->getNode()}
+
+      {foreach $vulnerabilityGroupEntity->getChilds() as $vulnerability}
+      <div class="page section6">
+        {if $firstPage}
+        {var $firstPage = false}
+        <tocentry content="5 Findings and Deficiencies" />
+        <h2>5 Findings and Deficiencies</h2>
+        {/if}
+
+        {if !in_array($vulnerability->getCategoryName(),$firstNodeGroup)}
+        <tocentry content="5.{$categoryNo} {$vulnerability->getCategoryName()}" level="1" />
+        <h3>5.{$categoryNo} {$vulnerability->getCategoryName()}</h3>
+        {var $firstNodeGroup[] = $vulnerability->getCategoryName()}
+        {/if}
+        <tocentry content="5.{$categoryNo}.{$findInCategoryNo} {$vulnerability->getName()}" level="2" />
+        <h4>5.{$categoryNo}.{$findInCategoryNo} {$vulnerability->getName()}</h4>
+
+        <h5>Severity</h5>
+        <table style="margin-left:-4px; margin-top:4px;">
+          <tr>
+            <td rowspan="2" style="padding-right:50px;" n:if="$vulnerability->getSeverity()">
+              <img class="img-severity" src="data:{$imgSeverityMime};base64,{$imgSeverity[$vulnerability->getSeverity()]}">
+            </td>
+            <td style="padding-right:20px;">
+              Subjectively:
+            </td>
+            <td style="padding-right:50px; font-weight:bold;">
+              {$vulnerability->getSeverity()}
+            </td>
+            <td style="padding-right:20px;">
+              CVSS score:
+            </td>
+            <td style="font-weight:bold;">
+              {$vulnerability->getCvssScore()}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              CWE:
+            </td>
+            <td style="font-weight:bold;">
+              {$vulnerability->getCwe()}
+            </td>
+            <td>
+              CVSS string:
+            </td>
+            <td style="font-weight:bold;">
+              {$vulnerability->getCvssVector()}
+            </td>
+          </tr>
+        </table>
+
+        <h5>Vulnerability Description</h5>
+        <p>{$vulnerability->getDescription()}</p>
+
+        <h5>Causes</h5>
+        <p>{$vulnerability->getCauses()}</p>
+
+        <h5>Symptoms</h5>
+        <p>{$vulnerability->getDisplays()}</p>
+
+        <h5>Impacts</h5>
+        <p>{$vulnerability->getImpacts()}</p>
+
+        <h5>Remediation / Recommendations</h5>
+        <p>{$vulnerability->getRecommendations()}</p>
+
+        <h5>Location</h5>
+        <p>{$vulnerability->getLocalization()}</p>
+
+        <div n:if="$vulnerability->getReferences()">
+          <h5>References</h5>
+          <ul n:inner-foreach="$vulnerability->getReferences() as $reference">
+            <li>{$reference->getName()}<br>
+              <a href="{$reference->getUrl()}">{$reference->getUrl()}</a>
+            </li>
+          </ul>
+        </div>
+
+        <div n:if="$vulnerability->getAttachments()">
+          <h5>Attachments</h5>
+          <div n:inner-foreach="$vulnerability->getAttachments() as $attachment">
+            <p>{$attachment->getName()} ({$attachment->getFileName()})</p>
+            <img n:if="$attachment->getContent()" src="data:{$attachment->getMimeType()};base64,{$attachment->getContent()}" alt="{$attachment->getName()}">
+          </div>
+        </div>
+      </div>
+      <pagebreak n:if="($categoryNo != count($report->getFoundVulnerabilities()->getByCategory())) || ($findInCategoryNo != count($vulnerabilityGroupEntity->getChilds()))" />
+      {var $findInCategoryNo = $findInCategoryNo + 1}
+      {/foreach}
+      {var $categoryNo = $categoryNo + 1}
+      {/foreach}
+  </div>
+
+  </body>
+
+</html>
