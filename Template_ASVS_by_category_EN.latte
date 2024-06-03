@@ -129,7 +129,7 @@
       <h2>{$report->getProjectUrl()}</h2>
       <hr />
       <div style="height: 150px;"></div>
-      <h3>{$report->getReportCreateDate()}, verze {$report->getReportVersion()}</h3>
+      <h3>{$report->getReportCreateDate()}, version {$report->getReportVersion()}</h3>
       <div style="height: 100px;"></div>
       <h3>{$report->getReportCreatorName()}</h3>
       <h3>{$report->getReportOwnerName()}</h3>
@@ -176,7 +176,7 @@
         <tocentry content="3.1 Summary of Findings by Severity" level="1" />
         <h3>3.1 Summary of Findings by Severity</h3>
         <table>
-          {foreach $nodes->getBySeverity() as $vulnerabilitiesGroupEntity}
+          {foreach $nodes->getBySeverity($report->getReportLanguage()) as $vulnerabilitiesGroupEntity}
           <tr>
             <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getSeverityName()}</td>
             <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getCount()}</td>
@@ -188,11 +188,11 @@
         <tocentry content="3.2 Summary of Findings by Category" level="1" />
         <h3>3.2 Summary of Findings by Category</h3>
         <table>
-          {foreach $nodes->getByCategory() as $vulnerabilitiesGroupEntity}
+          {foreach $nodes->getByCategory() as $category}
           <tr>
-            <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getSeverityName()}</td>
-            <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getCount()}</td>
-            <td class="graph bg-graph">{for $i = 0; $i < $vulnerabilitiesGroupEntity->getCount(); $i++}█{/for}</td>
+            <td style="padding-right:50px;">{$category->getName()}</td>
+            <td style="padding-right:50px;">{$category->getCount()}</td>
+            <td class="graph bg-graph">{for $i = 0; $i < $category->getCount(); $i++}█{/for}</td>
           </tr>
           {/foreach}
         </table>
@@ -283,7 +283,7 @@
               Subjectively:
             </td>
             <td style="padding-right:50px; font-weight:bold;">
-              {$vulnerability->getSeverity()}
+              {$vulnerability->getSeverityName($report->getReportLanguage())}
             </td>
             <td style="padding-right:20px;">
               CVSS score:

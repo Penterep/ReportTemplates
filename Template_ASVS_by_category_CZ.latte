@@ -176,7 +176,7 @@
         <tocentry content="3.1 Přehled nálezů podle závažnosti" level="1" />
         <h3>3.1 Přehled nálezů podle závažnosti</h3>
         <table>
-          {foreach $nodes->getBySeverity() as $vulnerabilitiesGroupEntity}
+          {foreach $nodes->getBySeverity($report->getReportLanguage()) as $vulnerabilitiesGroupEntity}
           <tr>
             <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getSeverityName()}</td>
             <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getCount()}</td>
@@ -188,11 +188,11 @@
         <tocentry content="3.2 Přehled nálezů podle kategorie" level="1" />
         <h3>3.2 Přehled nálezů podle kategorie</h3>
         <table>
-          {foreach $nodes->getByCategory() as $vulnerabilitiesGroupEntity}
+          {foreach $nodes->getByCategory() as $category}
           <tr>
-            <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getSeverityName()}</td>
-            <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getCount()}</td>
-            <td class="graph bg-graph">{for $i = 0; $i < $vulnerabilitiesGroupEntity->getCount(); $i++}█{/for}</td>
+            <td style="padding-right:50px;">{$category->getName()}</td>
+            <td style="padding-right:50px;">{$category->getCount()}</td>
+            <td class="graph bg-graph">{for $i = 0; $i < $category->getCount(); $i++}█{/for}</td>
           </tr>
           {/foreach}
         </table>
@@ -283,7 +283,7 @@
               Subjektivně:
             </td>
             <td style="padding-right:50px; font-weight:bold;">
-              {$vulnerability->getSeverity()}
+              {$vulnerability->getSeverityName($report->getReportLanguage())}
             </td>
             <td style="padding-right:20px;">
               CVSS skóre:
