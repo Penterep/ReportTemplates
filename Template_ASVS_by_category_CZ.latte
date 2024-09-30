@@ -316,7 +316,7 @@
       <div class="page section3">
         <tocentry content="2 Popis dokumentu" />
         <h2>2 Popis dokumentu</h2>
-        <p>Tento dokument obsahuje výsledky penetračního testu, jehož provedením byla pověřena společnost {$report->getReportOwnerName()}. Penetrační test měl v praxi ověřit funkčnost zabezpečení webové aplikace {$report->getProjectName()}. Penetrační test byl prováděn z anonymní úrovně, bez znalosti zdrojových kódů aplikace. Konzultant společnosti {$report->getReportOwnerName()} provádějící test disponoval pouze omezenou znalostí o prostředí zákazníka a vycházel především z informací běžně dostupných libovolnému uživateli Internetu. Testování bylo zaměřeno na odhalení možnosti průniku do aplikace (a dalších souvisejících prvků, např. do databází interní sítě) „náhodným“ útočníkem (tzv. „outsiderem“), který nemá představu o struktuře a obsahu aplikace a pouze „pokouší štěstí“.</p>
+        <p>Tento dokument obsahuje výsledky penetračního testu, jehož provedením byla pověřena společnost <b>{$report->getReportOwnerName()}</b>. Penetrační test měl v praxi ověřit funkčnost zabezpečení webové aplikace <b>{$report->getProjectName()}</b>. Penetrační test byl prováděn z anonymní úrovně, bez znalosti zdrojových kódů aplikace. Konzultant společnosti {$report->getReportOwnerName()} provádějící test disponoval pouze omezenou znalostí o prostředí zákazníka a vycházel především z informací běžně dostupných libovolnému uživateli Internetu. Testování bylo zaměřeno na odhalení možnosti průniku do aplikace (a dalších souvisejících prvků, např. do databází interní sítě) „náhodným“ útočníkem (tzv. „outsiderem“), který nemá představu o struktuře a obsahu aplikace a pouze „pokouší štěstí“.</p>
         <p>Dokument je rozdělen do několika částí:
         <ul>
           <li><b>Manažerský souhrn</b> - stručný průřez průběhu testů společně s výsledky.</li>
@@ -361,11 +361,11 @@
 
         <tocentry content="3.3 Hlavní nálezy" level="1" />
         <h3>3.3 Hlavní nálezy</h3>
-        <p>{$report->getTestingMainFindings()}</p>
+        <p data-format="markdown">{$report->getTestingMainFindings()}</p>
 
         <tocentry content="3.4 Závěr" level="1" />
         <h3>3.4 Závěr</h3>
-        <p>{$report->getTestingConclusions()}</p>
+        <p data-format="markdown">{$report->getTestingConclusions()}</p>
 
         <div n:if="$report->getTestingScore()" class="text-center">
           <img class="img-severity" src="data:{$imgSeverityMime};base64,{$imgSeverity[$report->getTestingScore()]}">
@@ -383,11 +383,11 @@
         <p n:if="!$report->getTestingSubjectDescription()">
           Předmětem testu byla webová aplikace <b>{$report->getProjectName()}</b> provozovaná na doméně <b>{$report->getProjectUrl()}</b>
         </p>
-        <p n:if="$report->getTestingSubjectDescription()">{$report->getTestingSubjectDescription()}</p>
+        <p data-format="markdown" n:if="$report->getTestingSubjectDescription()">{$report->getTestingSubjectDescription()}</p>
 
         <tocentry content="4.2 Podmínky testování a limity" level="1" />
         <h3>4.2 Podmínky testování a limity</h3>
-        <p>{$report->getTestingConditions()}</p>
+        <p data-format="markdown">{$report->getTestingConditions()}</p>
 
         <tocentry content="4.3 Použitá metodika testování" level="1" />
         <h3>4.3 Použitá metodika testování</h3>
