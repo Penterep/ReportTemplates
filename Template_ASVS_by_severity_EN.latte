@@ -257,7 +257,7 @@
         <div>
         <div class="section1">
             <h1 style="padding-top:130px;">Web Application Security Test Report</h1>
-            <h2>(by categories)</h2>
+            <h2>(by severity)</h2>
             <div style="height: 130px;"></div>
             <hr />
             <h2>{$report->project->name}</h2>
@@ -284,7 +284,7 @@
         <sethtmlpageheader name="header-page" value="off" show-this-page="1" />
         <sethtmlpagefooter name="footer-page" value="on" show-this-page="1" />
         
-        <!-- Description of the Document -->
+         <!-- Description of the Document -->
         <div class="section3">
             <tocentry content="2 Description of the Document" />
             <h2>2 Description of the Document</h2>
@@ -388,13 +388,13 @@
             <tocentry content="5 Findings and Deficiencies" />
             <h2>5 Findings and Deficiencies</h2>
             {var $categoryNo = 1}
-            {foreach $categoriesDefinitions->whereNull('parent')->where('level',2301)->sortBy('name')  as $category} {* 2301 = kategorie ASVS *}
-                {if $vulnerabilities->getByCategory($category->code)->isNotEmpty()}
-                    <tocentry content="5.{$categoryNo} {$category->name}" level="1" />
-                    <h3>5.{$categoryNo} {$category->name}</h3><br>
+            {foreach $severities->sortByDesc('value') as $severity}
+                {if $vulnerabilities->where('severity_guid', $severity->guid)->isNotEmpty()}
+                    <tocentry content="5.{$categoryNo} {$severity->name} závažnost" level="1" />
+                    <h3>5.{$categoryNo} {$severity->name} severity</h3><br>
                     {var $findInCategoryNo = 1}
                     {var $outerIterator = $iterator}
-                    {foreach $vulnerabilities->getByCategory($category->code) as $vulnerability}
+                    {foreach $vulnerabilities->where('severity_guid', $severity->guid) as $vulnerability}
                         <tocentry content="5.{$categoryNo}.{$findInCategoryNo} {$vulnerability->text->name}" level="2" />
                         <h4>5.{$categoryNo}.{$findInCategoryNo} {$vulnerability->text->name}</h4>
                         <h5>Severity</h5>
@@ -432,6 +432,12 @@
                             </tr>
                         </table>
 
+                        <h5>Categorization</h5>
+                        <p>
+                            {foreach $vulnerability->categories as $category}
+                                {$category->name}<br>
+                            {/foreach}
+                        </p>
                         <h5>Vulnerability Description</h5>
                         <p data-format="markdown">{$vulnerability->text->description}</p>
 

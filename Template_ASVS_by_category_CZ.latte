@@ -1,23 +1,11 @@
-{varType Entities\ReportEntity $report}
-{varType Entities\VulnerabilityEntity $vulnerability}
-{varType Entities\NodesGroupEntity $nodes}
-{varType Entities\VulnerabilitiesGroupEntity $vulnerabilitiesGroupEntity}
-{varType Entities\TestingModuleEntity $module}
-{varType Entities\NodeEntity $node}
-
 <!-- Obrázky pro grafické zobrazení závažnosti -->
 {var $imgSeverityMime = "image/svg+xml"}
 {var $imgSeverity = [
-  "severityInfo"         => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojMDBiN2JhO30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzFfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTY0LjczLDcxYTMwLDMwLDAsMCwwLTUuNjUsMTQuNjksMy40NSwzLjQ1LDAsMCwxLTMuNDEsMy4xNUgxNC4xOGEzLjQzLDMuNDMsMCwwLDEtMy40My0zLjU5QTc4LjExLDc4LjExLDAsMCwxLDI1LjY5LDQyLjY4WiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NiwzLjQ2LDAsMCwxLTMuNDItMy4xNkEzMC40MywzMC40MywwLDAsMCw3OS44OCw2MHYwYTMwLjMzLDMwLjMzLDAsMCwwLTE1LjE3LDExbC0zOS0yOC4zN0E3OC43Nyw3OC43NywwLDAsMSw2NC43NywxNC4xOWwwLS4xNUE3OC44Miw3OC44MiwwLDAsMSwxNjcuNzgsODUuMzhaIi8+PHBhdGggY2xhc3M9ImNscy00IiBkPSJNODkuNSw3Ni4xOHYwbC00MSwuNTdMODcuNzYsODguNTV2MGE2LjA3LDYuMDcsMCwwLDAsLjg0LjIxLDYuMzIsNi4zMiwwLDEsMCwxLjc2LTEyLjUxQTUsNSwwLDAsMCw4OS41LDc2LjE4WiIvPjwvc3ZnPg==",
-  "vulnSeverityInfo"     => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojMDBiN2JhO30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzFfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTY0LjczLDcxYTMwLDMwLDAsMCwwLTUuNjUsMTQuNjksMy40NSwzLjQ1LDAsMCwxLTMuNDEsMy4xNUgxNC4xOGEzLjQzLDMuNDMsMCwwLDEtMy40My0zLjU5QTc4LjExLDc4LjExLDAsMCwxLDI1LjY5LDQyLjY4WiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NiwzLjQ2LDAsMCwxLTMuNDItMy4xNkEzMC40MywzMC40MywwLDAsMCw3OS44OCw2MHYwYTMwLjMzLDMwLjMzLDAsMCwwLTE1LjE3LDExbC0zOS0yOC4zN0E3OC43Nyw3OC43NywwLDAsMSw2NC43NywxNC4xOWwwLS4xNUE3OC44Miw3OC44MiwwLDAsMSwxNjcuNzgsODUuMzhaIi8+PHBhdGggY2xhc3M9ImNscy00IiBkPSJNODkuNSw3Ni4xOHYwbC00MSwuNTdMODcuNzYsODguNTV2MGE2LjA3LDYuMDcsMCwwLDAsLjg0LjIxLDYuMzIsNi4zMiwwLDEsMCwxLjc2LTEyLjUxQTUsNSwwLDAsMCw4OS41LDc2LjE4WiIvPjwvc3ZnPg==",
-  "severityLow"          => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojMTk4NzU0O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzJfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTc5Ljg5LDYwQTMwLjM5LDMwLjM5LDAsMCwwLDY0LjcyLDcxYTMwLjA5LDMwLjA5LDAsMCwwLTUuNjQsMTQuNjksMy40NiwzLjQ2LDAsMCwxLTMuNDIsMy4xNUgxNC4xOGEzLjQzLDMuNDMsMCwwLDEtMy40My0zLjU5QTc4LjY3LDc4LjY3LDAsMCwxLDY1LDE0LjEyWiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NywzLjQ3LDAsMCwxLTMuNDItMy4xNkEzMC4zOSwzMC4zOSwwLDAsMCw4OS4wOCw1OC41N2EzMC40MiwzMC40MiwwLDAsMC05LjQsMS40OGwtMTUtNDZBNzguOCw3OC44LDAsMCwxLDE2Ny43OCw4NS4zOFoiLz48cGF0aCBjbGFzcz0iY2xzLTQiIGQ9Ik04My45MSw4Ni4yMmwwLDAtMjMtMzMuODlMOTMuMDUsNzcuN2wwLDBhNS44OSw1Ljg5LDAsMCwxLC42NS41Nyw2LjMyLDYuMzIsMCwxLDEtOS4yNCw4LjYyQTYuOTIsNi45MiwwLDAsMSw4My45MSw4Ni4yMloiLz48L3N2Zz4=",
-  "vulnSeverityLow"      => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojMTk4NzU0O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzJfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTc5Ljg5LDYwQTMwLjM5LDMwLjM5LDAsMCwwLDY0LjcyLDcxYTMwLjA5LDMwLjA5LDAsMCwwLTUuNjQsMTQuNjksMy40NiwzLjQ2LDAsMCwxLTMuNDIsMy4xNUgxNC4xOGEzLjQzLDMuNDMsMCwwLDEtMy40My0zLjU5QTc4LjY3LDc4LjY3LDAsMCwxLDY1LDE0LjEyWiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NywzLjQ3LDAsMCwxLTMuNDItMy4xNkEzMC4zOSwzMC4zOSwwLDAsMCw4OS4wOCw1OC41N2EzMC40MiwzMC40MiwwLDAsMC05LjQsMS40OGwtMTUtNDZBNzguOCw3OC44LDAsMCwxLDE2Ny43OCw4NS4zOFoiLz48cGF0aCBjbGFzcz0iY2xzLTQiIGQ9Ik04My45MSw4Ni4yMmwwLDAtMjMtMzMuODlMOTMuMDUsNzcuN2wwLDBhNS44OSw1Ljg5LDAsMCwxLC42NS41Nyw2LjMyLDYuMzIsMCwxLDEtOS4yNCw4LjYyQTYuOTIsNi45MiwwLDAsMSw4My45MSw4Ni4yMloiLz48L3N2Zz4=",
-  "severityMiddle"       => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZmZhNzI2O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzNfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTExMy40MywxNGwtMTUsNDZBMzAuMzIsMzAuMzIsMCwwLDAsNzkuODgsNjB2MEEzMC4zOSwzMC4zOSwwLDAsMCw2NC43Miw3MWEzMC4wOSwzMC4wOSwwLDAsMC01LjY0LDE0LjY5LDMuNDUsMy40NSwwLDAsMS0zLjQxLDMuMTVIMTQuMThhMy40MywzLjQzLDAsMCwxLTMuNDMtMy41OSw3OC42NSw3OC42NSwwLDAsMSw1NC03MS4xbDAtLjE1YTc5LjE2LDc5LjE2LDAsMCwxLDQ4LjcxLDBaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMTY3Ljc4LDg1LjM4YTMuNDQsMy40NCwwLDAsMS0zLjQzLDMuNmgtNDEuNmEzLjQ1LDMuNDUsMCwwLDEtMy40MS0zLjE2QTMwLjQ3LDMwLjQ3LDAsMCwwLDk4LjQ3LDYwLjA1bDE1LTQ2YTc4Ljg0LDc4Ljg0LDAsMCwxLDU0LjM1LDcxLjM0WiIvPjxwYXRoIGNsYXNzPSJjbHMtNCIgZD0iTTk1LjUsODEuOGgwTDg5LjI3LDQxLjMsODMsODEuOGgwYTcuODQsNy44NCwwLDAsMC0uMDguODYsNi4zMiw2LjMyLDAsMSwwLDEyLjYzLDBBNiw2LDAsMCwwLDk1LjUsODEuOFoiLz48L3N2Zz4=",
-  "vulnSeverityMiddle"   => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZmZhNzI2O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzNfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTExMy40MywxNGwtMTUsNDZBMzAuMzIsMzAuMzIsMCwwLDAsNzkuODgsNjB2MEEzMC4zOSwzMC4zOSwwLDAsMCw2NC43Miw3MWEzMC4wOSwzMC4wOSwwLDAsMC01LjY0LDE0LjY5LDMuNDUsMy40NSwwLDAsMS0zLjQxLDMuMTVIMTQuMThhMy40MywzLjQzLDAsMCwxLTMuNDMtMy41OSw3OC42NSw3OC42NSwwLDAsMSw1NC03MS4xbDAtLjE1YTc5LjE2LDc5LjE2LDAsMCwxLDQ4LjcxLDBaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMTY3Ljc4LDg1LjM4YTMuNDQsMy40NCwwLDAsMS0zLjQzLDMuNmgtNDEuNmEzLjQ1LDMuNDUsMCwwLDEtMy40MS0zLjE2QTMwLjQ3LDMwLjQ3LDAsMCwwLDk4LjQ3LDYwLjA1bDE1LTQ2YTc4Ljg0LDc4Ljg0LDAsMCwxLDU0LjM1LDcxLjM0WiIvPjxwYXRoIGNsYXNzPSJjbHMtNCIgZD0iTTk1LjUsODEuOGgwTDg5LjI3LDQxLjMsODMsODEuOGgwYTcuODQsNy44NCwwLDAsMC0uMDguODYsNi4zMiw2LjMyLDAsMSwwLDEyLjYzLDBBNiw2LDAsMCwwLDk1LjUsODEuOFoiLz48L3N2Zz4=",
-  "severityHigh"         => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZjE1YTI0O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzRfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE1Mi44MSw0Mi42NiwxMTMuNjgsNzEuMWEzMC4zNCwzMC4zNCwwLDAsMC0xNS4yMS0xMUEzMC4yOSwzMC4yOSwwLDAsMCw3OS44OSw2MHYwQTMwLjQsMzAuNCwwLDAsMCw1OS4wOCw4NS43M2EzLjQ1LDMuNDUsMCwwLDEtMy40MSwzLjE1SDE0LjE4YTMuNDQsMy40NCwwLDAsMS0zLjQzLTMuNTksNzguNjcsNzguNjcsMCwwLDEsNTQtNzEuMTFsMC0uMTRhNzguNzcsNzguNzcsMCwwLDEsODguMDgsMjguNjJaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMTY0LjM1LDg5aC00MS42YTMuNDcsMy40NywwLDAsMS0zLjQyLTMuMTYsMzAsMzAsMCwwLDAtNS42Ni0xNC43MkwxNTIuOCw0Mi42N2E3OC4xNyw3OC4xNywwLDAsMSwxNSw0Mi43MUEzLjQ0LDMuNDQsMCwwLDEsMTY0LjM1LDg5WiIvPjxwYXRoIGNsYXNzPSJjbHMtNCIgZD0iTTk0LjUsODYuMjJsMCwwLDIzLTMzLjg5TDg1LjM3LDc3LjdsMCwwYTcsNywwLDAsMC0uNjUuNTdBNi4zMiw2LjMyLDAsMCwwLDk0LDg2LjkxLDUuNjcsNS42NywwLDAsMCw5NC41LDg2LjIyWiIvPjwvc3ZnPg==",
-  "vulnSeverityHigh"     => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZjE1YTI0O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzRfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE1Mi44MSw0Mi42NiwxMTMuNjgsNzEuMWEzMC4zNCwzMC4zNCwwLDAsMC0xNS4yMS0xMUEzMC4yOSwzMC4yOSwwLDAsMCw3OS44OSw2MHYwQTMwLjQsMzAuNCwwLDAsMCw1OS4wOCw4NS43M2EzLjQ1LDMuNDUsMCwwLDEtMy40MSwzLjE1SDE0LjE4YTMuNDQsMy40NCwwLDAsMS0zLjQzLTMuNTksNzguNjcsNzguNjcsMCwwLDEsNTQtNzEuMTFsMC0uMTRhNzguNzcsNzguNzcsMCwwLDEsODguMDgsMjguNjJaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMTY0LjM1LDg5aC00MS42YTMuNDcsMy40NywwLDAsMS0zLjQyLTMuMTYsMzAsMzAsMCwwLDAtNS42Ni0xNC43MkwxNTIuOCw0Mi42N2E3OC4xNyw3OC4xNywwLDAsMSwxNSw0Mi43MUEzLjQ0LDMuNDQsMCwwLDEsMTY0LjM1LDg5WiIvPjxwYXRoIGNsYXNzPSJjbHMtNCIgZD0iTTk0LjUsODYuMjJsMCwwLDIzLTMzLjg5TDg1LjM3LDc3LjdsMCwwYTcsNywwLDAsMC0uNjUuNTdBNi4zMiw2LjMyLDAsMCwwLDk0LDg2LjkxLDUuNjcsNS42NywwLDAsMCw5NC41LDg2LjIyWiIvPjwvc3ZnPg==",
-  "severityCritical"     => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZDYzMTMxO30uY2xzLTN7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzVfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NSwzLjQ1LDAsMCwxLTMuNDEtMy4xNkEzMC40LDMwLjQsMCwwLDAsNzkuODksNjB2MEEzMC40LDMwLjQsMCwwLDAsNTkuMDgsODUuNzNhMy40NCwzLjQ0LDAsMCwxLTMuNDEsMy4xNUgxNC4xOWEzLjQ0LDMuNDQsMCwwLDEtMy40NC0zLjU5LDc4LjY1LDc4LjY1LDAsMCwxLDU0LTcxLjFsMC0uMTVBNzguNzksNzguNzksMCwwLDEsMTY3Ljc4LDg1LjM4WiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTkwLjYsODguNzF2MEwxMjkuODQsNzYuOWwtNDEtLjU2djBhNi4xOCw2LjE4LDAsMCwwLS44NiwwLDYuMzIsNi4zMiwwLDEsMCwxLjc2LDEyLjUxQTUuNTgsNS41OCwwLDAsMCw5MC42LDg4LjcxWiIvPjwvc3ZnPg==",
-  "vulnSeverityCritical" => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZDYzMTMxO30uY2xzLTN7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzVfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NSwzLjQ1LDAsMCwxLTMuNDEtMy4xNkEzMC40LDMwLjQsMCwwLDAsNzkuODksNjB2MEEzMC40LDMwLjQsMCwwLDAsNTkuMDgsODUuNzNhMy40NCwzLjQ0LDAsMCwxLTMuNDEsMy4xNUgxNC4xOWEzLjQ0LDMuNDQsMCwwLDEtMy40NC0zLjU5LDc4LjY1LDc4LjY1LDAsMCwxLDU0LTcxLjFsMC0uMTVBNzguNzksNzguNzksMCwwLDEsMTY3Ljc4LDg1LjM4WiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTkwLjYsODguNzF2MEwxMjkuODQsNzYuOWwtNDEtLjU2djBhNi4xOCw2LjE4LDAsMCwwLS44NiwwLDYuMzIsNi4zMiwwLDEsMCwxLjc2LDEyLjUxQTUuNTgsNS41OCwwLDAsMCw5MC42LDg4LjcxWiIvPjwvc3ZnPg=="
+  "severity-1" => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojMDBiN2JhO30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzFfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTY0LjczLDcxYTMwLDMwLDAsMCwwLTUuNjUsMTQuNjksMy40NSwzLjQ1LDAsMCwxLTMuNDEsMy4xNUgxNC4xOGEzLjQzLDMuNDMsMCwwLDEtMy40My0zLjU5QTc4LjExLDc4LjExLDAsMCwxLDI1LjY5LDQyLjY4WiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NiwzLjQ2LDAsMCwxLTMuNDItMy4xNkEzMC40MywzMC40MywwLDAsMCw3OS44OCw2MHYwYTMwLjMzLDMwLjMzLDAsMCwwLTE1LjE3LDExbC0zOS0yOC4zN0E3OC43Nyw3OC43NywwLDAsMSw2NC43NywxNC4xOWwwLS4xNUE3OC44Miw3OC44MiwwLDAsMSwxNjcuNzgsODUuMzhaIi8+PHBhdGggY2xhc3M9ImNscy00IiBkPSJNODkuNSw3Ni4xOHYwbC00MSwuNTdMODcuNzYsODguNTV2MGE2LjA3LDYuMDcsMCwwLDAsLjg0LjIxLDYuMzIsNi4zMiwwLDEsMCwxLjc2LTEyLjUxQTUsNSwwLDAsMCw4OS41LDc2LjE4WiIvPjwvc3ZnPg==",
+  "severity-2" => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojMTk4NzU0O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzJfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTc5Ljg5LDYwQTMwLjM5LDMwLjM5LDAsMCwwLDY0LjcyLDcxYTMwLjA5LDMwLjA5LDAsMCwwLTUuNjQsMTQuNjksMy40NiwzLjQ2LDAsMCwxLTMuNDIsMy4xNUgxNC4xOGEzLjQzLDMuNDMsMCwwLDEtMy40My0zLjU5QTc4LjY3LDc4LjY3LDAsMCwxLDY1LDE0LjEyWiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NywzLjQ3LDAsMCwxLTMuNDItMy4xNkEzMC4zOSwzMC4zOSwwLDAsMCw4OS4wOCw1OC41N2EzMC40MiwzMC40MiwwLDAsMC05LjQsMS40OGwtMTUtNDZBNzguOCw3OC44LDAsMCwxLDE2Ny43OCw4NS4zOFoiLz48cGF0aCBjbGFzcz0iY2xzLTQiIGQ9Ik04My45MSw4Ni4yMmwwLDAtMjMtMzMuODlMOTMuMDUsNzcuN2wwLDBhNS44OSw1Ljg5LDAsMCwxLC42NS41Nyw2LjMyLDYuMzIsMCwxLDEtOS4yNCw4LjYyQTYuOTIsNi45MiwwLDAsMSw4My45MSw4Ni4yMloiLz48L3N2Zz4=",
+  "severity-3" => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZmZhNzI2O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzNfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTExMy40MywxNGwtMTUsNDZBMzAuMzIsMzAuMzIsMCwwLDAsNzkuODgsNjB2MEEzMC4zOSwzMC4zOSwwLDAsMCw2NC43Miw3MWEzMC4wOSwzMC4wOSwwLDAsMC01LjY0LDE0LjY5LDMuNDUsMy40NSwwLDAsMS0zLjQxLDMuMTVIMTQuMThhMy40MywzLjQzLDAsMCwxLTMuNDMtMy41OSw3OC42NSw3OC42NSwwLDAsMSw1NC03MS4xbDAtLjE1YTc5LjE2LDc5LjE2LDAsMCwxLDQ4LjcxLDBaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMTY3Ljc4LDg1LjM4YTMuNDQsMy40NCwwLDAsMS0zLjQzLDMuNmgtNDEuNmEzLjQ1LDMuNDUsMCwwLDEtMy40MS0zLjE2QTMwLjQ3LDMwLjQ3LDAsMCwwLDk4LjQ3LDYwLjA1bDE1LTQ2YTc4Ljg0LDc4Ljg0LDAsMCwxLDU0LjM1LDcxLjM0WiIvPjxwYXRoIGNsYXNzPSJjbHMtNCIgZD0iTTk1LjUsODEuOGgwTDg5LjI3LDQxLjMsODMsODEuOGgwYTcuODQsNy44NCwwLDAsMC0uMDguODYsNi4zMiw2LjMyLDAsMSwwLDEyLjYzLDBBNiw2LDAsMCwwLDk1LjUsODEuOFoiLz48L3N2Zz4=",
+  "severity-4" => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZjE1YTI0O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzRfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE1Mi44MSw0Mi42NiwxMTMuNjgsNzEuMWEzMC4zNCwzMC4zNCwwLDAsMC0xNS4yMS0xMUEzMC4yOSwzMC4yOSwwLDAsMCw3OS44OSw2MHYwQTMwLjQsMzAuNCwwLDAsMCw1OS4wOCw4NS43M2EzLjQ1LDMuNDUsMCwwLDEtMy40MSwzLjE1SDE0LjE4YTMuNDQsMy40NCwwLDAsMS0zLjQzLTMuNTksNzguNjcsNzguNjcsMCwwLDEsNTQtNzEuMTFsMC0uMTRhNzguNzcsNzguNzcsMCwwLDEsODguMDgsMjguNjJaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMTY0LjM1LDg5aC00MS42YTMuNDcsMy40NywwLDAsMS0zLjQyLTMuMTYsMzAsMzAsMCwwLDAtNS42Ni0xNC43MkwxNTIuOCw0Mi42N2E3OC4xNyw3OC4xNywwLDAsMSwxNSw0Mi43MUEzLjQ0LDMuNDQsMCwwLDEsMTY0LjM1LDg5WiIvPjxwYXRoIGNsYXNzPSJjbHMtNCIgZD0iTTk0LjUsODYuMjJsMCwwLDIzLTMzLjg5TDg1LjM3LDc3LjdsMCwwYTcsNywwLDAsMC0uNjUuNTdBNi4zMiw2LjMyLDAsMCwwLDk0LDg2LjkxLDUuNjcsNS42NywwLDAsMCw5NC41LDg2LjIyWiIvPjwvc3ZnPg==",
+  "severity-5" => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZDYzMTMxO30uY2xzLTN7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzVfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NSwzLjQ1LDAsMCwxLTMuNDEtMy4xNkEzMC40LDMwLjQsMCwwLDAsNzkuODksNjB2MEEzMC40LDMwLjQsMCwwLDAsNTkuMDgsODUuNzNhMy40NCwzLjQ0LDAsMCwxLTMuNDEsMy4xNUgxNC4xOWEzLjQ0LDMuNDQsMCwwLDEtMy40NC0zLjU5LDc4LjY1LDc4LjY1LDAsMCwxLDU0LTcxLjFsMC0uMTVBNzguNzksNzguNzksMCwwLDEsMTY3Ljc4LDg1LjM4WiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTkwLjYsODguNzF2MEwxMjkuODQsNzYuOWwtNDEtLjU2djBhNi4xOCw2LjE4LDAsMCwwLS44NiwwLDYuMzIsNi4zMiwwLDEsMCwxLjc2LDEyLjUxQTUuNTgsNS41OCwwLDAsMCw5MC42LDg4LjcxWiIvPjwvc3ZnPg==",
 ]}
 
 {var $imgLogoMime = "image/svg+xml"}
@@ -25,486 +13,465 @@
 
 <!DOCTYPE html>
 <html lang="cs">
+    <head>
+        <meta charset="utf-8" />
+        <title>{ifset $title}{$title}{else}Report PENTEREP{/ifset}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- Style definitions -->
+        <style>
+            body { font-family: system-ui, sans-serif; font-size:14px; }
+            h3, h4, h5 { margin-bottom: 0px; margin-top: 12px; }
+            p, ul { margin-top: 4px; text-align: justify;}
+            code { padding: 2px 4px; margin: 0; font-size: 85%; background-color: #f2f2f2; border-radius: 3px; border: 1px solid #b2b2b2; }
+            .strong { font-weight: bold; font-size: 0.8rem; }
+            .small { font-style:italic; font-size: 0.6rem; }
+            .logo { margin-top: 20px; max-height: 40px; max-width: 200px; }
+            .section1 h1, .section1 h2, .section1 h3 { text-align: center; margin-top: 6px; }
+            .section6 h4 { border-bottom: 1px solid #333; }
+            .section6 table { font-size: 13px; }
+            .graph { font-size: 1rem; display: inline; }
+            .img-severity { width: 100px; }
+            .detail-vuln-severity { margin-left:-4px; margin-top:4px; margin-bottom: 24px; }
+            .detail-vuln-path {}
 
-  <head>
-    <meta charset="utf-8" />
-    <title>{if isset($title)}{$title}{else}Report PENTEREP{/if}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            /* Color definitions */
+            .section4 .severity-1 { color: blue; }
+            .section4 .severity-2 { color: green; }
+            .section4 .severity-3 { color: orange; }
+            .section4 .severity-4 { color: red; }
+            .section4 .severity-5 { color: darkred; }
+            .section4 .bg-graph { color: #FF9551; }
 
-    <!-- Style definitions -->
-    <style>
-        body { font-family: system-ui, sans-serif; font-size:16px; }
-        h3, h4, h5 { margin-bottom: 0px; margin-top: 12px; }
-        p, ul { margin-top: 4px; text-align: justify;}
-        code { padding: 2px 4px; margin: 0; font-size: 85%; background-color: #f2f2f2; border-radius: 3px; border: 1px solid #b2b2b2; }
-        .strong { font-weight: bold; font-size: 0.8rem; }
-        .small { font-style:italic; font-size: 0.6rem; }
-        .logo { margin-top: 20px; max-height: 40px; max-width: 200px; }
-        .section1 h1, .section1 h2, .section1 h3 { text-align: center; margin-top: 6px; }
-        .section6 h4 { border-bottom: 1px solid #333; }
-        .graph { font-size: 1rem; display: inline; }
-        .img-severity { width: 100px; }
-        .detail-vuln-severity { margin-left:-4px; margin-top:4px; margin-bottom: 24px; }
-        .detail-vuln-path {}
+            /* Table of Content style definitions */
+            div.mpdf_toc { font-size: 9pt; }
+            a.mpdf_toc_a {}
+            div.mpdf_toc_level_0 {}     /* Whole line level 0 */
+            span.mpdf_toc_t_level_0 {}  /* Title level 0 - may be inside <a> */
+            span.mpdf_toc_p_level_0 {}  /* Page no. level 0 - may be inside <a> */
+            div.mpdf_toc_level_1 {}     /* Whole line level 1 */
+            span.mpdf_toc_t_level_1 {}  /* Title level 1 */
+            span.mpdf_toc_p_level_1  {} /* Page no. level 1 - may be inside <a> */
+            div.mpdf_toc_level_2 {}     /* Whole line level 2 */
+            span.mpdf_toc_t_level_2 {}  /* Title level 2 */
+            span.mpdf_toc_p_level_2 {}  /* Page no. level 2 - may be inside <a> */
 
-        /* Color definitions */
-        .section4 .severity-info { color: blue; }
-        .section4 .severity-low { color: green; }
-        .section4 .severity-middle { color: orange; }
-        .section4 .severity-high { color: red; }
-        .section4 .severity-critical { color: darkred; }
-        .section4 .bg-graph { color: #FF9551; }
+            /* Markdown style definitions */
+            .p-markdown {}
+            .markdown-body .octicon { display: inline-block; fill: currentColor; vertical-align: text-bottom; }
+            .markdown-body .anchor { float: left; line-height: 1.5; margin-left: -20px; padding-right: 4px; }
+            .markdown-body .anchor:focus { outline: 0; }
+            .markdown-body h1 .octicon-link, .markdown-body h2 .octicon-link, .markdown-body h3 .octicon-link, .markdown-body h4 .octicon-link, .markdown-body h5 .octicon-link, .markdown-body h6 .octicon-link { color: #1b1f23; vertical-align: middle; visibility: hidden; }
+            .markdown-body h1:hover .anchor, .markdown-body h2:hover .anchor, .markdown-body h3:hover .anchor, .markdown-body h4:hover .anchor, .markdown-body h5:hover .anchor, .markdown-body h6:hover .anchor { text-decoration: none; }
+            .markdown-body h1:hover .anchor .octicon-link, .markdown-body h2:hover .anchor .octicon-link, .markdown-body h3:hover .anchor .octicon-link, .markdown-body h4:hover .anchor .octicon-link, .markdown-body h5:hover .anchor .octicon-link, .markdown-body h6:hover .anchor .octicon-link { visibility: visible; }
+            .markdown-body h1:hover .anchor .octicon-link:before, .markdown-body h2:hover .anchor .octicon-link:before, .markdown-body h3:hover .anchor .octicon-link:before, .markdown-body h4:hover .anchor .octicon-link:before, .markdown-body h5:hover .anchor .octicon-link:before, .markdown-body h6:hover .anchor .octicon-link:before { width: 16px; height: 16px; content: " "; display: inline-block; }
+            .markdown-body {}
+            .markdown-body details { display: block; }
+            .markdown-body summary { display: list-item; }
+            .markdown-body a { background-color: initial; }
+            .markdown-body a:active, .markdown-body a:hover { outline-width: 0; }
+            .markdown-body em { font-style: italic; }
+            .markdown-body h1 { font-size: 2em; margin: 0.67em 0; }
+            .markdown-body img { border-style: none; }
+            .markdown-body code, .markdown-body kbd, .markdown-body pre { font-family: monospace, monospace; font-size: 1em; }
+            .markdown-body hr { box-sizing: initial; height: 0; overflow: visible; }
+            .markdown-body input { font: inherit; margin: 0; height: auto !important; }
+            .markdown-body input { overflow: visible; }
+            .markdown-body [type="checkbox"] { box-sizing: border-box; padding: 0; }
+            .markdown-body * { box-sizing: border-box; }
+            .markdown-body input { font-family: inherit; font-size: inherit; line-height: inherit; }
+            .markdown-body a { color: #0366d6; text-decoration: none; }
+            .markdown-body a:hover { text-decoration: underline; }
+            .markdown-body strong { font-weight: bold; font-size: 0.8rem; }
+            .markdown-body hr { height: 0; margin: 15px 0; overflow: hidden; background: 0 0; border: 0; border-bottom: 1px solid #dfe2e5;}
+            .markdown-body hr:after, .markdown-body hr:before { display: table; content: ""; }
+            .markdown-body hr:after { clear: both; }
+            .markdown-body table { border-spacing: 0; border-collapse: collapse; }
+            .markdown-body td, .markdown-body th { padding: 0; }
+            .markdown-body details summary { cursor: pointer; }
+            .markdown-body kbd { display: inline-block; padding: 3px 5px; font: 11px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; line-height: 10px; color: #444d56; vertical-align: middle; background-color: #fafbfc; border: 1px solid #d1d5da; border-radius: 3px; }
+            .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6 { margin-top: 0; margin-bottom: 0; }
+            .markdown-body h1 { font-size: 32px; }
+            .markdown-body h1, .markdown-body h2 { font-weight: 600; }
+            .markdown-body h2 { font-size: 24px; }
+            .markdown-body h3 { font-size: 20px; }
+            .markdown-body h3, .markdown-body h4 { font-weight: 600; }
+            .markdown-body h4 { font-size: 16px; }
+            .markdown-body h5 { font-size: 14px; }
+            .markdown-body h5, .markdown-body h6 { font-weight: 600; }
+            .markdown-body h6 { font-size: 12px; }
+            .markdown-body p {}
+            .markdown-body blockquote { margin: 0; }
+            .markdown-body ol, .markdown-body ul { padding-left: 0; margin-top: 0; margin-bottom: 0; }
+            .markdown-body ol { list-style: decimal; }
+            .markdown-body ul { list-style: outside; }
+            .markdown-body ol ol, .markdown-body ul ol { list-style-type: lower-roman ; }
+            .markdown-body ol ol ol, .markdown-body ol ul ol, .markdown-body ul ol ol, .markdown-body ul ul ol { list-style-type: lower-alpha; }
+            .markdown-body dd { margin-left: 0; }
+            .markdown-body code, .markdown-body pre { font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; font-size: 12px; }
+            .markdown-body pre { margin-top: 0; margin-bottom: 0; }
+            .markdown-body input::-webkit-inner-spin-button, .markdown-body input::-webkit-outer-spin-button { margin: 0; -webkit-appearance: none; appearance: none; }
+            .markdown-body :checked+.radio-label { position: relative; z-index: 1; border-color: #0366d6; }
+            .markdown-body .border { border: 1px solid #e1e4e8 !important; }
+            .markdown-body .border-0 { border: 0 !important; }
+            .markdown-body .border-bottom { border-bottom: 1px solid #e1e4e8 !important; }
+            .markdown-body .rounded-1 { border-radius: 3px !important; }
+            .markdown-body .bg-white { background-color: #212121 !important; }
+            .markdown-body .bg-gray-light { background-color: #fafbfc !important; }
+            .markdown-body .text-gray-light { color: #6a737d !important; }
+            .markdown-body .mb-0 { margin-bottom: 0 !important; }
+            .markdown-body .my-2 { margin-top: 8px !important; margin-bottom: 8px !important; }
+            .markdown-body .pl-0 { padding-left: 0 !important; }
+            .markdown-body .py-0 { padding-top: 0 !important; padding-bottom: 0 !important; }
+            .markdown-body .pl-1 { padding-left: 4px !important; }
+            .markdown-body .pl-2 { padding-left: 8px !important;}
+            .markdown-body .py-2 { padding-top: 8px !important; padding-bottom: 8px !important; }
+            .markdown-body .pl-3, .markdown-body .px-3 { padding-left: 16px !important; }
+            .markdown-body .px-3 { padding-right: 16px !important; }
+            .markdown-body .pl-4 { padding-left: 24px !important; }
+            .markdown-body .pl-5 { padding-left: 32px !important; }
+            .markdown-body .pl-6 { padding-left: 40px !important; }
+            .markdown-body .f6 { font-size: 12px !important; }
+            .markdown-body .lh-condensed { line-height: 1.25 !important; }
+            .markdown-body .text-bold { font-weight: 600 !important; }
+            .markdown-body .pl-c { color: #6a737d; }
+            .markdown-body .pl-c1, .markdown-body .pl-s .pl-v { color: #005cc5; }
+            .markdown-body .pl-e, .markdown-body .pl-en { color: #6f42c1; }
+            .markdown-body .pl-s .pl-s1, .markdown-body .pl-smi { color: #24292e; }
+            .markdown-body .pl-ent { color: #22863a; }
+            .markdown-body .pl-k { color: #d73a49; }
+            .markdown-body .pl-pds, .markdown-body .pl-s, .markdown-body .pl-s .pl-pse .pl-s1, .markdown-body .pl-sr, .markdown-body .pl-sr .pl-cce, .markdown-body .pl-sr .pl-sra, .markdown-body .pl-sr .pl-sre { color: #032f62; }
+            .markdown-body .pl-smw, .markdown-body .pl-v { color: #e36209; }
+            .markdown-body .pl-bu { color: #b31d28; }
+            .markdown-body .pl-ii { color: #fafbfc; background-color: #b31d28; }
+            .markdown-body .pl-c2 { color: #fafbfc; background-color: #d73a49; }
+            .markdown-body .pl-c2:before {}
+            .markdown-body .pl-sr .pl-cce { font-weight: 700; color: #22863a;}
+            .markdown-body .pl-ml { color: #735c0f;}
+            .markdown-body .pl-mh, .markdown-body .pl-mh .pl-en, .markdown-body .pl-ms { font-weight: 700; color: #005cc5;}
+            .markdown-body .pl-mi { font-style: italic; color: #24292e; }
+            .markdown-body .pl-mb { font-weight: 700; color: #24292e; }
+            .markdown-body .pl-md { color: #b31d28; background-color: #ffeef0; }
+            .markdown-body .pl-mi1 { color: #22863a; background-color: #f0fff4; }
+            .markdown-body .pl-mc { color: #e36209; background-color: #ffebda; }
+            .markdown-body .pl-mi2 { color: #f6f8fa; background-color: #005cc5; }
+            .markdown-body .pl-mdr { font-weight: 700; color: #6f42c1; }
+            .markdown-body .pl-ba { color: #586069;}
+            .markdown-body .pl-sg { color: #959da5; }
+            .markdown-body .pl-corl { text-decoration: underline; color: #032f62;}
+            .markdown-body .mb-0 { margin-bottom: 0 !important;}
+            .markdown-body .my-2 { margin-bottom: 8px !important; }
+            .markdown-body .my-2 { margin-top: 8px !important; }
+            .markdown-body .pl-0 { padding-left: 0 !important; }
+            .markdown-body .py-0 { padding-top: 0 !important; padding-bottom: 0 !important; }
+            .markdown-body .pl-1 { padding-left: 4px !important; }
+            .markdown-body .pl-2 { padding-left: 8px !important; }
+            .markdown-body .py-2 { padding-top: 8px !important; padding-bottom: 8px !important; }
+            .markdown-body .pl-3 { padding-left: 16px !important; }
+            .markdown-body .pl-4 { padding-left: 24px !important; }
+            .markdown-body .pl-5 { padding-left: 32px !important; }
+            .markdown-body .pl-6 { padding-left: 40px !important; }
+            .markdown-body .pl-7 { padding-left: 48px !important; }
+            .markdown-body .pl-8 { padding-left: 64px !important; }
+            .markdown-body .pl-9 { padding-left: 80px !important; }
+            .markdown-body .pl-10 { padding-left: 96px !important; }
+            .markdown-body .pl-11 { padding-left: 112px !important; }
+            .markdown-body .pl-12 { padding-left: 128px !important; }
+            .markdown-body hr { border-bottom-color: #eee; }
+            .markdown-body kbd { display: inline-block; padding: 3px 5px; font: 11px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; line-height: 10px; color: #444d56; vertical-align: middle; background-color: #fafbfc; border: 1px solid #d1d5da; border-radius: 3px; }
+            .markdown-body:after, .markdown-body:before { display: table; content: ""; }
+            .markdown-body:after { clear: both; }
+            .markdown-body> :first-child { margin-top: 0 !important; }
+            .markdown-body> :last-child { margin-bottom: 0 !important; }
+            .markdown-body a:not([href]) { color: inherit; text-decoration: none; }
+            .markdown-body blockquote, .markdown-body details, .markdown-body dl, .markdown-body ol, .markdown-body pre, .markdown-body table, .markdown-body ul { margin-top: 0; margin-bottom: 16px; }
+            .markdown-body hr { height: 0.25em; padding: 0; margin: 24px 0; background-color: #e1e4e8; border: 0; }
+            .markdown-body blockquote { padding: 0 1em; color: #6a737d; border-left: 0.25em solid #dfe2e5; }
+            .markdown-body blockquote> :first-child { margin-top: 0; }
+            .markdown-body blockquote> :last-child { margin-bottom: 0; }
+            .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6 { margin-top: 24px; margin-bottom: 16px; font-weight: 600; line-height: 1.25; }
+            .markdown-body h1 { font-size: 2em; }
+            .markdown-body h1, .markdown-body h2 {}
+            .markdown-body h2 {}
+            .markdown-body h3 {}
+            .markdown-body h4 {}
+            .markdown-body h5 {}
+            .markdown-body h6 {}
+            .markdown-body ol, .markdown-body ul { padding-left: 3em; }
+            .markdown-body ol ol, .markdown-body ol ul, .markdown-body ul ol, .markdown-body ul ul { margin-top: 0; margin-bottom: 0; }
+            .markdown-body li { word-wrap: break-all; }
+            .markdown-body li>p { margin-top: 16px; }
+            .markdown-body li+li { margin-top: 0.25em; }
+            .markdown-body dl { padding: 0; }
+            .markdown-body dl dt { padding: 0; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: 600; }
+            .markdown-body dl dd { padding: 0 16px; margin-bottom: 16px; }
+            .markdown-body table { display: block; width: 100%; overflow: auto; }
+            .markdown-body table th { font-weight: 600; background-color: #ff7c4b; }
+            .markdown-body table td, .markdown-body table th { padding: 6px 13px; }
+            .markdown-body table tr { background-color: #e3e3e3; border-top: 1px solid #c6cbd1; }
+            .markdown-body table tr:nth-child(2n) { background-color: #cccccc; }
+            .markdown-body img { max-width: 100%; box-sizing: initial; background-color: #212121; }
+            .markdown-body img[align="right"] { padding-left: 20px; }
+            .markdown-body img[align="left"] { padding-right: 20px; }
+            .markdown-body code { padding: 0.2em 0.4em; margin: 0; font-size: 85%; background-color: #bfbfbf; border-radius: 3px; }
+            .markdown-body pre { word-wrap: normal; }
+            .markdown-body pre>code { padding: 0; margin: 0; font-size: 100%; word-break: normal; white-space: pre; background: 0 0; border: 0; }
+            .markdown-body .highlight { margin-bottom: 16px; }
+            .markdown-body .highlight pre { margin-bottom: 0; word-break: normal; }
+            .markdown-body .highlight pre, .markdown-body pre { padding: 16px; overflow: auto; font-size: 85%; line-height: 1.45; background-color: #dcdcdc; border-radius: 3px; }
+            .markdown-body pre code { display: inline; max-width: auto; padding: 0; margin: 0; overflow: visible; line-height: inherit; word-wrap: normal; background-color: initial; border: 0; }
+            .markdown-body .commit-tease-sha { display: inline-block; font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; font-size: 90%; color: #444d56; }
+            .markdown-body .full-commit .btn-outline:not(:disabled):hover { color: #005cc5; border-color: #005cc5; }
+            .markdown-body .blob-wrapper { overflow-x: auto; overflow-y: hidden; }
+            .markdown-body .blob-wrapper-embedded { max-height: 240px; overflow-y: auto; }
+            .markdown-body .blob-num { width: 1%; min-width: 50px; padding-right: 10px; padding-left: 10px; font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; font-size: 12px; line-height: 20px; color: rgba(27, 31, 35, 0.3); text-align: right; white-space: nowrap; vertical-align: top; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+            .markdown-body .blob-num:hover { color: rgba(27, 31, 35, 0.6); }
+            .markdown-body .blob-num:before { content: attr(data-line-number); }
+            .markdown-body .blob-code { position: relative; padding-right: 10px; padding-left: 10px; line-height: 20px; vertical-align: top; }
+            .markdown-body .blob-code-inner { overflow: visible; font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; font-size: 12px; color: #24292e; word-wrap: normal; white-space: pre; }
+            .markdown-body .pl-token.active, .markdown-body .pl-token:hover { cursor: pointer; background: #ffea7f; }
+            .markdown-body .tab-size[data-tab-size="1"] { -moz-tab-size: 1; tab-size: 1; }
+            .markdown-body .tab-size[data-tab-size="2"] { -moz-tab-size: 2; tab-size: 2; }
+            .markdown-body .tab-size[data-tab-size="3"] { -moz-tab-size: 3; tab-size: 3; }
+            .markdown-body .tab-size[data-tab-size="4"] { -moz-tab-size: 4; tab-size: 4; }
+            .markdown-body .tab-size[data-tab-size="5"] { -moz-tab-size: 5; tab-size: 5; }
+            .markdown-body .tab-size[data-tab-size="6"] { -moz-tab-size: 6; tab-size: 6; }
+            .markdown-body .tab-size[data-tab-size="7"] { -moz-tab-size: 7; tab-size: 7; }
+            .markdown-body .tab-size[data-tab-size="8"] { -moz-tab-size: 8; tab-size: 8; }
+            .markdown-body .tab-size[data-tab-size="9"] { -moz-tab-size: 9; tab-size: 9; }
+            .markdown-body .tab-size[data-tab-size="10"] { -moz-tab-size: 10; tab-size: 10; }
+            .markdown-body .tab-size[data-tab-size="11"] { -moz-tab-size: 11; tab-size: 11; }
+            .markdown-body .tab-size[data-tab-size="12"] { -moz-tab-size: 12; tab-size: 12; }
+            .markdown-body .task-list-item { list-style-type: none; }
+            .markdown-body .task-list-item+.task-list-item { margin-top: 3px; }
+            .markdown-body .task-list-item input { margin: 0 0.2em 0.25em -1.6em; vertical-align: middle; }
+        </style>
+    </head>
 
-        /* Table of Content style definitions */
-        div.mpdf_toc { font-size: 9pt; }
-        a.mpdf_toc_a {}
-        div.mpdf_toc_level_0 {}     /* Whole line level 0 */
-        span.mpdf_toc_t_level_0 {}  /* Title level 0 - may be inside <a> */
-        span.mpdf_toc_p_level_0 {}  /* Page no. level 0 - may be inside <a> */
-        div.mpdf_toc_level_1 {}     /* Whole line level 1 */
-        span.mpdf_toc_t_level_1 {}  /* Title level 1 */
-        span.mpdf_toc_p_level_1  {} /* Page no. level 1 - may be inside <a> */
-        div.mpdf_toc_level_2 {}     /* Whole line level 2 */
-        span.mpdf_toc_t_level_2 {}  /* Title level 2 */
-        span.mpdf_toc_p_level_2 {}  /* Page no. level 2 - may be inside <a> */
+    <body>
+        <!-- Definice hlavičky a patičky stránek -->
+        <htmlpageheader name="header-page"></htmlpageheader>
+        <htmlpagefooter name="footer-page">Strana {= '{PAGENO}' } z {= '{nbpg}' }</htmlpagefooter>
 
-        /* Markdown style definitions */
-        .p-markdown {}
-        .markdown-body .octicon { display: inline-block; fill: currentColor; vertical-align: text-bottom; }
-        .markdown-body .anchor { float: left; line-height: 1.5; margin-left: -20px; padding-right: 4px; }
-        .markdown-body .anchor:focus { outline: 0; }
-        .markdown-body h1 .octicon-link, .markdown-body h2 .octicon-link, .markdown-body h3 .octicon-link, .markdown-body h4 .octicon-link, .markdown-body h5 .octicon-link, .markdown-body h6 .octicon-link { color: #1b1f23; vertical-align: middle; visibility: hidden; }
-        .markdown-body h1:hover .anchor, .markdown-body h2:hover .anchor, .markdown-body h3:hover .anchor, .markdown-body h4:hover .anchor, .markdown-body h5:hover .anchor, .markdown-body h6:hover .anchor { text-decoration: none; }
-        .markdown-body h1:hover .anchor .octicon-link, .markdown-body h2:hover .anchor .octicon-link, .markdown-body h3:hover .anchor .octicon-link, .markdown-body h4:hover .anchor .octicon-link, .markdown-body h5:hover .anchor .octicon-link, .markdown-body h6:hover .anchor .octicon-link { visibility: visible; }
-        .markdown-body h1:hover .anchor .octicon-link:before, .markdown-body h2:hover .anchor .octicon-link:before, .markdown-body h3:hover .anchor .octicon-link:before, .markdown-body h4:hover .anchor .octicon-link:before, .markdown-body h5:hover .anchor .octicon-link:before, .markdown-body h6:hover .anchor .octicon-link:before { width: 16px; height: 16px; content: " "; display: inline-block; }
-        .markdown-body {}
-        .markdown-body details { display: block; }
-        .markdown-body summary { display: list-item; }
-        .markdown-body a { background-color: initial; }
-        .markdown-body a:active, .markdown-body a:hover { outline-width: 0; }
-        .markdown-body em { font-style: italic; }
-        .markdown-body h1 { font-size: 2em; margin: 0.67em 0; }
-        .markdown-body img { border-style: none; }
-        .markdown-body code, .markdown-body kbd, .markdown-body pre { font-family: monospace, monospace; font-size: 1em; }
-        .markdown-body hr { box-sizing: initial; height: 0; overflow: visible; }
-        .markdown-body input { font: inherit; margin: 0; height: auto !important; }
-        .markdown-body input { overflow: visible; }
-        .markdown-body [type="checkbox"] { box-sizing: border-box; padding: 0; }
-        .markdown-body * { box-sizing: border-box; }
-        .markdown-body input { font-family: inherit; font-size: inherit; line-height: inherit; }
-        .markdown-body a { color: #0366d6; text-decoration: none; }
-        .markdown-body a:hover { text-decoration: underline; }
-        .markdown-body strong { font-weight: bold; font-size: 0.8rem; }
-        .markdown-body hr { height: 0; margin: 15px 0; overflow: hidden; background: 0 0; border: 0; border-bottom: 1px solid #dfe2e5;}
-        .markdown-body hr:after, .markdown-body hr:before { display: table; content: ""; }
-        .markdown-body hr:after { clear: both; }
-        .markdown-body table { border-spacing: 0; border-collapse: collapse; }
-        .markdown-body td, .markdown-body th { padding: 0; }
-        .markdown-body details summary { cursor: pointer; }
-        .markdown-body kbd { display: inline-block; padding: 3px 5px; font: 11px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; line-height: 10px; color: #444d56; vertical-align: middle; background-color: #fafbfc; border: 1px solid #d1d5da; border-radius: 3px; }
-        .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6 { margin-top: 0; margin-bottom: 0; }
-        .markdown-body h1 { font-size: 32px; }
-        .markdown-body h1, .markdown-body h2 { font-weight: 600; }
-        .markdown-body h2 { font-size: 24px; }
-        .markdown-body h3 { font-size: 20px; }
-        .markdown-body h3, .markdown-body h4 { font-weight: 600; }
-        .markdown-body h4 { font-size: 16px; }
-        .markdown-body h5 { font-size: 14px; }
-        .markdown-body h5, .markdown-body h6 { font-weight: 600; }
-        .markdown-body h6 { font-size: 12px; }
-        .markdown-body p {}
-        .markdown-body blockquote { margin: 0; }
-        .markdown-body ol, .markdown-body ul { padding-left: 0; margin-top: 0; margin-bottom: 0; }
-        .markdown-body ol { list-style: decimal; }
-        .markdown-body ul { list-style: outside; }
-        .markdown-body ol ol, .markdown-body ul ol { list-style-type: lower-roman ; }
-        .markdown-body ol ol ol, .markdown-body ol ul ol, .markdown-body ul ol ol, .markdown-body ul ul ol { list-style-type: lower-alpha; }
-        .markdown-body dd { margin-left: 0; }
-        .markdown-body code, .markdown-body pre { font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; font-size: 12px; }
-        .markdown-body pre { margin-top: 0; margin-bottom: 0; }
-        .markdown-body input::-webkit-inner-spin-button, .markdown-body input::-webkit-outer-spin-button { margin: 0; -webkit-appearance: none; appearance: none; }
-        .markdown-body :checked+.radio-label { position: relative; z-index: 1; border-color: #0366d6; }
-        .markdown-body .border { border: 1px solid #e1e4e8 !important; }
-        .markdown-body .border-0 { border: 0 !important; }
-        .markdown-body .border-bottom { border-bottom: 1px solid #e1e4e8 !important; }
-        .markdown-body .rounded-1 { border-radius: 3px !important; }
-        .markdown-body .bg-white { background-color: #212121 !important; }
-        .markdown-body .bg-gray-light { background-color: #fafbfc !important; }
-        .markdown-body .text-gray-light { color: #6a737d !important; }
-        .markdown-body .mb-0 { margin-bottom: 0 !important; }
-        .markdown-body .my-2 { margin-top: 8px !important; margin-bottom: 8px !important; }
-        .markdown-body .pl-0 { padding-left: 0 !important; }
-        .markdown-body .py-0 { padding-top: 0 !important; padding-bottom: 0 !important; }
-        .markdown-body .pl-1 { padding-left: 4px !important; }
-        .markdown-body .pl-2 { padding-left: 8px !important;}
-        .markdown-body .py-2 { padding-top: 8px !important; padding-bottom: 8px !important; }
-        .markdown-body .pl-3, .markdown-body .px-3 { padding-left: 16px !important; }
-        .markdown-body .px-3 { padding-right: 16px !important; }
-        .markdown-body .pl-4 { padding-left: 24px !important; }
-        .markdown-body .pl-5 { padding-left: 32px !important; }
-        .markdown-body .pl-6 { padding-left: 40px !important; }
-        .markdown-body .f6 { font-size: 12px !important; }
-        .markdown-body .lh-condensed { line-height: 1.25 !important; }
-        .markdown-body .text-bold { font-weight: 600 !important; }
-        .markdown-body .pl-c { color: #6a737d; }
-        .markdown-body .pl-c1, .markdown-body .pl-s .pl-v { color: #005cc5; }
-        .markdown-body .pl-e, .markdown-body .pl-en { color: #6f42c1; }
-        .markdown-body .pl-s .pl-s1, .markdown-body .pl-smi { color: #24292e; }
-        .markdown-body .pl-ent { color: #22863a; }
-        .markdown-body .pl-k { color: #d73a49; }
-        .markdown-body .pl-pds, .markdown-body .pl-s, .markdown-body .pl-s .pl-pse .pl-s1, .markdown-body .pl-sr, .markdown-body .pl-sr .pl-cce, .markdown-body .pl-sr .pl-sra, .markdown-body .pl-sr .pl-sre { color: #032f62; }
-        .markdown-body .pl-smw, .markdown-body .pl-v { color: #e36209; }
-        .markdown-body .pl-bu { color: #b31d28; }
-        .markdown-body .pl-ii { color: #fafbfc; background-color: #b31d28; }
-        .markdown-body .pl-c2 { color: #fafbfc; background-color: #d73a49; }
-        .markdown-body .pl-c2:before {}
-        .markdown-body .pl-sr .pl-cce { font-weight: 700; color: #22863a;}
-        .markdown-body .pl-ml { color: #735c0f;}
-        .markdown-body .pl-mh, .markdown-body .pl-mh .pl-en, .markdown-body .pl-ms { font-weight: 700; color: #005cc5;}
-        .markdown-body .pl-mi { font-style: italic; color: #24292e; }
-        .markdown-body .pl-mb { font-weight: 700; color: #24292e; }
-        .markdown-body .pl-md { color: #b31d28; background-color: #ffeef0; }
-        .markdown-body .pl-mi1 { color: #22863a; background-color: #f0fff4; }
-        .markdown-body .pl-mc { color: #e36209; background-color: #ffebda; }
-        .markdown-body .pl-mi2 { color: #f6f8fa; background-color: #005cc5; }
-        .markdown-body .pl-mdr { font-weight: 700; color: #6f42c1; }
-        .markdown-body .pl-ba { color: #586069;}
-        .markdown-body .pl-sg { color: #959da5; }
-        .markdown-body .pl-corl { text-decoration: underline; color: #032f62;}
-        .markdown-body .mb-0 { margin-bottom: 0 !important;}
-        .markdown-body .my-2 { margin-bottom: 8px !important; }
-        .markdown-body .my-2 { margin-top: 8px !important; }
-        .markdown-body .pl-0 { padding-left: 0 !important; }
-        .markdown-body .py-0 { padding-top: 0 !important; padding-bottom: 0 !important; }
-        .markdown-body .pl-1 { padding-left: 4px !important; }
-        .markdown-body .pl-2 { padding-left: 8px !important; }
-        .markdown-body .py-2 { padding-top: 8px !important; padding-bottom: 8px !important; }
-        .markdown-body .pl-3 { padding-left: 16px !important; }
-        .markdown-body .pl-4 { padding-left: 24px !important; }
-        .markdown-body .pl-5 { padding-left: 32px !important; }
-        .markdown-body .pl-6 { padding-left: 40px !important; }
-        .markdown-body .pl-7 { padding-left: 48px !important; }
-        .markdown-body .pl-8 { padding-left: 64px !important; }
-        .markdown-body .pl-9 { padding-left: 80px !important; }
-        .markdown-body .pl-10 { padding-left: 96px !important; }
-        .markdown-body .pl-11 { padding-left: 112px !important; }
-        .markdown-body .pl-12 { padding-left: 128px !important; }
-        .markdown-body hr { border-bottom-color: #eee; }
-        .markdown-body kbd { display: inline-block; padding: 3px 5px; font: 11px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; line-height: 10px; color: #444d56; vertical-align: middle; background-color: #fafbfc; border: 1px solid #d1d5da; border-radius: 3px; }
-        .markdown-body:after, .markdown-body:before { display: table; content: ""; }
-        .markdown-body:after { clear: both; }
-        .markdown-body> :first-child { margin-top: 0 !important; }
-        .markdown-body> :last-child { margin-bottom: 0 !important; }
-        .markdown-body a:not([href]) { color: inherit; text-decoration: none; }
-        .markdown-body blockquote, .markdown-body details, .markdown-body dl, .markdown-body ol, .markdown-body pre, .markdown-body table, .markdown-body ul { margin-top: 0; margin-bottom: 16px; }
-        .markdown-body hr { height: 0.25em; padding: 0; margin: 24px 0; background-color: #e1e4e8; border: 0; }
-        .markdown-body blockquote { padding: 0 1em; color: #6a737d; border-left: 0.25em solid #dfe2e5; }
-        .markdown-body blockquote> :first-child { margin-top: 0; }
-        .markdown-body blockquote> :last-child { margin-bottom: 0; }
-        .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6 { margin-top: 24px; margin-bottom: 16px; font-weight: 600; line-height: 1.25; }
-        .markdown-body h1 { font-size: 2em; }
-        .markdown-body h1, .markdown-body h2 {}
-        .markdown-body h2 {}
-        .markdown-body h3 {}
-        .markdown-body h4 {}
-        .markdown-body h5 {}
-        .markdown-body h6 {}
-        .markdown-body ol, .markdown-body ul { padding-left: 3em; }
-        .markdown-body ol ol, .markdown-body ol ul, .markdown-body ul ol, .markdown-body ul ul { margin-top: 0; margin-bottom: 0; }
-        .markdown-body li { word-wrap: break-all; }
-        .markdown-body li>p { margin-top: 16px; }
-        .markdown-body li+li { margin-top: 0.25em; }
-        .markdown-body dl { padding: 0; }
-        .markdown-body dl dt { padding: 0; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: 600; }
-        .markdown-body dl dd { padding: 0 16px; margin-bottom: 16px; }
-        .markdown-body table { display: block; width: 100%; overflow: auto; }
-        .markdown-body table th { font-weight: 600; background-color: #ff7c4b; }
-        .markdown-body table td, .markdown-body table th { padding: 6px 13px; }
-        .markdown-body table tr { background-color: #e3e3e3; border-top: 1px solid #c6cbd1; }
-        .markdown-body table tr:nth-child(2n) { background-color: #cccccc; }
-        .markdown-body img { max-width: 100%; box-sizing: initial; background-color: #212121; }
-        .markdown-body img[align="right"] { padding-left: 20px; }
-        .markdown-body img[align="left"] { padding-right: 20px; }
-        .markdown-body code { padding: 0.2em 0.4em; margin: 0; font-size: 85%; background-color: #bfbfbf; border-radius: 3px; }
-        .markdown-body pre { word-wrap: normal; }
-        .markdown-body pre>code { padding: 0; margin: 0; font-size: 100%; word-break: normal; white-space: pre; background: 0 0; border: 0; }
-        .markdown-body .highlight { margin-bottom: 16px; }
-        .markdown-body .highlight pre { margin-bottom: 0; word-break: normal; }
-        .markdown-body .highlight pre, .markdown-body pre { padding: 16px; overflow: auto; font-size: 85%; line-height: 1.45; background-color: #dcdcdc; border-radius: 3px; }
-        .markdown-body pre code { display: inline; max-width: auto; padding: 0; margin: 0; overflow: visible; line-height: inherit; word-wrap: normal; background-color: initial; border: 0; }
-        .markdown-body .commit-tease-sha { display: inline-block; font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; font-size: 90%; color: #444d56; }
-        .markdown-body .full-commit .btn-outline:not(:disabled):hover { color: #005cc5; border-color: #005cc5; }
-        .markdown-body .blob-wrapper { overflow-x: auto; overflow-y: hidden; }
-        .markdown-body .blob-wrapper-embedded { max-height: 240px; overflow-y: auto; }
-        .markdown-body .blob-num { width: 1%; min-width: 50px; padding-right: 10px; padding-left: 10px; font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; font-size: 12px; line-height: 20px; color: rgba(27, 31, 35, 0.3); text-align: right; white-space: nowrap; vertical-align: top; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-        .markdown-body .blob-num:hover { color: rgba(27, 31, 35, 0.6); }
-        .markdown-body .blob-num:before { content: attr(data-line-number); }
-        .markdown-body .blob-code { position: relative; padding-right: 10px; padding-left: 10px; line-height: 20px; vertical-align: top; }
-        .markdown-body .blob-code-inner { overflow: visible; font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; font-size: 12px; color: #24292e; word-wrap: normal; white-space: pre; }
-        .markdown-body .pl-token.active, .markdown-body .pl-token:hover { cursor: pointer; background: #ffea7f; }
-        .markdown-body .tab-size[data-tab-size="1"] { -moz-tab-size: 1; tab-size: 1; }
-        .markdown-body .tab-size[data-tab-size="2"] { -moz-tab-size: 2; tab-size: 2; }
-        .markdown-body .tab-size[data-tab-size="3"] { -moz-tab-size: 3; tab-size: 3; }
-        .markdown-body .tab-size[data-tab-size="4"] { -moz-tab-size: 4; tab-size: 4; }
-        .markdown-body .tab-size[data-tab-size="5"] { -moz-tab-size: 5; tab-size: 5; }
-        .markdown-body .tab-size[data-tab-size="6"] { -moz-tab-size: 6; tab-size: 6; }
-        .markdown-body .tab-size[data-tab-size="7"] { -moz-tab-size: 7; tab-size: 7; }
-        .markdown-body .tab-size[data-tab-size="8"] { -moz-tab-size: 8; tab-size: 8; }
-        .markdown-body .tab-size[data-tab-size="9"] { -moz-tab-size: 9; tab-size: 9; }
-        .markdown-body .tab-size[data-tab-size="10"] { -moz-tab-size: 10; tab-size: 10; }
-        .markdown-body .tab-size[data-tab-size="11"] { -moz-tab-size: 11; tab-size: 11; }
-        .markdown-body .tab-size[data-tab-size="12"] { -moz-tab-size: 12; tab-size: 12; }
-        .markdown-body .task-list-item { list-style-type: none; }
-        .markdown-body .task-list-item+.task-list-item { margin-top: 3px; }
-        .markdown-body .task-list-item input { margin: 0 0.2em 0.25em -1.6em; vertical-align: middle; }
-    </style>
-  </head>
-
-  <body>
-    <!-- Definice hlavičky a patičky stránek -->
-    <htmlheader name="header-title-page">
-    <sethtmlpageheader name="header-title-page" value="off"></sethtmlpageheader>
-    <htmlpagefooter name="footer-title-page"></htmlpagefooter>
-    <sethtmlpagefooter name="footer-title-page" value="off"></sethtmlpagefooter>
-
-    <!-- Titulní stránka -->
-    <div>
-      <div class="page section1">
-        <h1 style="padding-top:150px;">Report z bezpečnostního testu webové aplikace</h1>
-        <div style="height: 150px;"></div>
-        <hr />
-        <h2>{$report->getProjectName()}</h2>
-        <h2>{$report->getProjectUrl()}</h2>
-        <hr />
-        <div style="height: 150px;"></div>
-        <h3>{$report->getReportCreateDate()}, verze {$report->getReportVersion()}</h3>
-        <div style="height: 100px;"></div>
-        <h3>{$report->getReportCreatorName()}</h3>
-        <h3>{$report->getReportOwnerName()}</h3>
-        <div style="text-align: center">
-          <img class="logo" src="data:{$imgLogoMime};base64,{$imgLogo}">
+        <!-- Titulní stránka -->
+        <div>
+        <div class="section1">
+            <h1 style="padding-top:130px;">Report z bezpečnostního testu webové aplikace</h1>
+            <h2>(podle kategorií)</h2>
+            <div style="height: 130px;"></div>
+            <hr />
+            <h2>{$report->project->name}</h2>
+            <h2>{$report->target->address}</h2>
+            <hr />
+            <div style="height: 130px;"></div>
+            <h3>{$report->info->created_at|date:'d.m.Y'}, verze {$report->info->version}</h3>
+            <div style="height: 100px;"></div>
+            <h3>{$report->info->creator}</h3>
+            <h3>{$report->owner->name}</h3>
+            <div style="text-align: center">
+            <img class="logo" src="data:{$imgLogoMime};base64,{$imgLogo}">
+            </div>
         </div>
-      </div>
-      <pagebreak />
-
-      <!-- Obsah -->
-      <div class="page section2">
-        <tocpagebreak toc-prehtml="&lt;h2&gt;1 Obsah dokumentu&lt;/h2&gt;" toc-posthtml="" links="ON" toc-sheet-size="A4" toc-resetpagenum="0" resetpagenum="0" toc-pageselector="toc" outdent="-20mm" toc-bookmarktext="1. Obsah dokumentu" supress="0"></tocpagebreak>
-      </div>
-
-      <!-- Definice hlavičky a patičky ostatních stránek -->
-      <htmlheader name="header-page">
-      <sethtmlpageheader name="header-page" value="off"></sethtmlpageheader>
-      <htmlpagefooter name="footer-page" n:syntax="double">Strana {PAGENO} z {nbpg}</htmlpagefooter>
-      <sethtmlpagefooter name="footer-page" value="on"></sethtmlpagefooter>
-
-      <!-- Popis dokumentu-->
-      <div class="page section3">
-        <tocentry content="2 Popis dokumentu" />
-        <h2>2 Popis dokumentu</h2>
-        <p>Tento dokument obsahuje výsledky penetračního testu, jehož provedením byla pověřena společnost <b>{$report->getReportOwnerName()}</b>. Penetrační test měl v praxi ověřit funkčnost zabezpečení webové aplikace <b>{$report->getProjectName()}</b>. Penetrační test byl prováděn z anonymní úrovně, bez znalosti zdrojových kódů aplikace. Konzultant společnosti <b>{$report->getReportOwnerName()}</b> provádějící test disponoval pouze omezenou znalostí o prostředí zákazníka a vycházel především z informací běžně dostupných libovolnému uživateli Internetu. Testování bylo zaměřeno na odhalení možnosti průniku do aplikace (a dalších souvisejících prvků, např. do databází interní sítě) „náhodným“ útočníkem (tzv. „outsiderem“), který nemá představu o struktuře a obsahu aplikace a pouze „pokouší štěstí“.</p>
-        <p>Dokument je rozdělen do několika částí:
-        <ul>
-          <li><b>Manažerský souhrn</b> - stručný průřez průběhu testů společně s výsledky.</li>
-          <li><b>Popis testu</b> - popis metodiky testu.</li>
-          <li><b>Zjištěné skutečnosti</b> - nedostatky a další významné informace zjištěné během provádění testu.</li>
-        </ul>
-        </p>
-        <p>V této zprávě jsou popsána zjištění učiněná během testů i doporučení z nich vyplývající.</p>
-      </div>
-      <pagebreak />
-      <htmlpagefooter name="footer" n:syntax="double">2 Strana {PAGENO} z {nbpg}</htmlpagefooter>
-
-      <!-- Manažerské shrnutí -->
-      <div class="page section4">
-        <tocentry content="3 Manažerské shrnutí" />
-        <h2>3 Manažerské shrnutí</h2>
-        {var $nodes = $report->getFoundVulnerabilities()}
-
-        <tocentry content="3.1 Přehled nálezů podle závažnosti" level="1" />
-        <h3>3.1 Přehled nálezů podle závažnosti</h3>
-        <table>
-          {foreach $nodes->getBySeverity($report->getReportLanguage()) as $vulnerabilitiesGroupEntity}
-          <tr>
-            <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getSeverityName()}</td>
-            <td style="padding-right:50px;">{$vulnerabilitiesGroupEntity->getCount()}</td>
-            <td class="graph severity-{$vulnerabilitiesGroupEntity->getSeverityCode()}">{for $i = 0; $i < $vulnerabilitiesGroupEntity->getCount(); $i++}█{/for}</td>
-          </tr>
-          {/foreach}
-        </table>
-
-        <tocentry content="3.2 Přehled nálezů podle kategorie" level="1" />
-        <h3>3.2 Přehled nálezů podle kategorie</h3>
-        <table>
-          {foreach $nodes->getByCategory() as $category}
-          <tr>
-            <td style="padding-right:50px;">{$category->getName()}</td>
-            <td style="padding-right:50px;">{$category->getCount()}</td>
-            <td class="graph bg-graph">{for $i = 0; $i < $category->getCount(); $i++}█{/for}</td>
-          </tr>
-          {/foreach}
-        </table>
-
-        <tocentry content="3.3 Hlavní nálezy" level="1" />
-        <h3>3.3 Hlavní nálezy</h3>
-        <p data-format="markdown">{$report->getTestingMainFindings()}</p>
-
-        <tocentry content="3.4 Závěr" level="1" />
-        <h3>3.4 Závěr</h3>
-        <p data-format="markdown">{$report->getTestingConclusions()}</p>
-
-        <div n:if="$report->getTestingScore()" class="text-center">
-          <img class="img-severity" src="data:{$imgSeverityMime};base64,{$imgSeverity[$report->getTestingScore()]}">
         </div>
-      </div>
-      <pagebreak />
+        <pagebreak />
 
-      <!-- Popis testu-->
-      <div class="page section5">
-        <tocentry content="4 Popis a průběh testu" />
-        <h2>4 Popis a průběh testu</h2>
+        <!-- Obsah -->
+        <div class="section2">
+            <tocpagebreak toc-prehtml="&lt;h2&gt;1 Obsah dokumentu&lt;/h2&gt;" toc-posthtml="" links="ON" toc-sheet-size="A4" toc-resetpagenum="0" resetpagenum="0" toc-pageselector="toc" outdent="-20mm" toc-bookmarktext="1. Obsah dokumentu" supress="0"></tocpagebreak>
+        </div>
 
-        <tocentry content="4.1 Předmět testu" level="1" />
-        <h3>4.1 Předmět testu</h3>
-        <p n:if="!$report->getTestingSubjectDescription()">
-          Předmětem testu byla webová aplikace <b>{$report->getProjectName()}</b> provozovaná na doméně <b>{$report->getProjectUrl()}</b>
-        </p>
-        <p data-format="markdown" n:if="$report->getTestingSubjectDescription()">{$report->getTestingSubjectDescription()}</p>
+        <!-- Od této chvíle začínáme vkládat hlavičky a patičky na stránky -->
+        <sethtmlpageheader name="header-page" value="off" show-this-page="1" />
+        <sethtmlpagefooter name="footer-page" value="on" show-this-page="1" />
+        
+        <!-- Popis dokumentu-->
+        <div class="section3">
+            <tocentry content="2 Popis dokumentu" />
+            <h2>2 Popis dokumentu</h2>
+            <p>Tento dokument obsahuje výsledky penetračního testu, jehož provedením byla pověřena společnost <b>{$report->owner->name}</b>. Penetrační test měl v praxi ověřit funkčnost zabezpečení webové aplikace <b>{$report->target->name}</b> provozované na adrese <b>{$report->target->address}</b>. Penetrační test byl prováděn z anonymní úrovně, bez znalosti zdrojových kódů aplikace. Konzultant společnosti <b>{$report->owner->name}</b> provádějící test disponoval pouze omezenou znalostí o prostředí zákazníka a vycházel především z informací běžně dostupných libovolnému uživateli Internetu. Testování bylo zaměřeno na odhalení možnosti průniku do aplikace (a dalších souvisejících prvků, např. do databází interní sítě) „náhodným“ útočníkem (tzv. „outsiderem“), který nemá představu o struktuře a obsahu aplikace a pouze „pokouší štěstí“.</p>
+            <p>Dokument je rozdělen do několika částí:
+            <ul>
+                <li><b>Manažerský souhrn</b> - stručný průřez průběhu testů společně s výsledky.</li>
+                <li><b>Popis testu</b> - popis metodiky testu.</li>
+                <li><b>Zjištěné skutečnosti</b> - nedostatky a další významné informace zjištěné během provádění testu.</li>
+            </ul>
+            </p>
+            <p>V této zprávě jsou popsána zjištění učiněná během testů i doporučení z nich vyplývající.</p>
+        </div>
+        <pagebreak />
 
-        <tocentry content="4.2 Podmínky testování a limity" level="1" />
-        <h3>4.2 Podmínky testování a limity</h3>
-        <p data-format="markdown">{$report->getTestingConditions()}</p>
+        <!-- Manažerské shrnutí -->
+        <div class="section4">
+            <tocentry content="3 Manažerské shrnutí" />
+            <h2>3 Manažerské shrnutí</h2>
 
-        <tocentry content="4.3 Použitá metodika testování" level="1" />
-        <h3>4.3 Použitá metodika testování</h3>
-        <p>Testy byly provedeny manuálním testováním podle následujících metodik a standardů:</p>
-        <ul>
-          {foreach $report->getTestingModules() as $module}
-          <li>{$module->getName()}</li>
-          {/foreach}
-        </ul>
-
-        <tocentry content="4.4 Kontakty" level="1" />
-        <h3>4.4 Kontakty</h3>
-        {foreach $report->getOwnerContacts() as $contact}
-        <p>
-          Jméno: {$contact->getName()}<br>
-          Pozice: {$contact->getRole()}<br>
-          E-mail: {$contact->getEmail()}<br>
-          Telefon: {$contact->getPhone()}
-        </p>
-        {/foreach}
-      </div>
-      <pagebreak />
-
-      <!-- Detaily nálezů -->
-      {var $firstPage = true}
-      {var $categoryNo = 1}
-      {foreach $report->getFoundVulnerabilities()->getByCategory() as $vulnerabilityGroupEntity}
-        {var $findInCategoryNo = 1}
-        {var $firstNodeGroup = []}
-        {var $node = $vulnerabilityGroupEntity->getNode()}
-
-        {foreach $vulnerabilityGroupEntity->getChilds() as $vulnerability}
-          <div class="page section6">
-            {if $firstPage}
-              {var $firstPage = false}
-
-              <tocentry content="5 Zjištěné skutečnosti a nedostatky" />
-              <h2>5 Zjištěné skutečnosti a nedostatky</h2>
-            {/if}
-
-            {if !in_array($vulnerability->getCategoryName(),$firstNodeGroup)}
-              <tocentry content="5.{$categoryNo} {$vulnerability->getCategoryName()}" level="1" />
-              <h3>5.{$categoryNo} {$vulnerability->getCategoryName()}</h3>
-              {var $firstNodeGroup[] = $vulnerability->getCategoryName()}
-            {/if}
-
-            <tocentry content="5.{$categoryNo}.{$findInCategoryNo} {$vulnerability->getName()}" level="2" />
-            <h4>5.{$categoryNo}.{$findInCategoryNo} {$vulnerability->getName()}</h4>
-
-            <h5>Závažnost</h5>
-            <table class="detail-vuln-severity">
-              <tr>
-                <td rowspan="2" style="padding-right:50px;" n:if="$vulnerability->getSeverity()">
-                  <img class="img-severity" src="data:{$imgSeverityMime};base64,{$imgSeverity[$vulnerability->getSeverity()]}">
-                </td>
-                <td style="padding-right:20px;">
-                  Subjektivně:
-                </td>
-                <td class="strong" style="padding-right:50px;">
-                  {$vulnerability->getSeverityName($report->getReportLanguage())}
-                </td>
-                <td style="padding-right:20px;">
-                  CVSS skóre:
-                </td>
-                <td class="strong">
-                  {$vulnerability->getCvssScore()}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  CWE:
-                </td>
-                <td class="strong">
-                  {$vulnerability->getCwe()}
-                </td>
-                <td>
-                  CVSS řetězec:
-                </td>
-                <td class="strong">
-                  {$vulnerability->getCvssVector()}
-                </td>
-              </tr>
+            <tocentry content="3.1 Přehled nálezů podle závažnosti" level="1" />
+            <h3>3.1 Přehled nálezů podle závažnosti</h3>
+            <table>
+                {foreach $severities->sortBy('value') as $severity}
+                <tr>
+                    <td style="padding-right:50px;">{$severity->name}</td>
+                    <td style="padding-right:50px;">{$vulnerabilities->where('severity_guid', $severity->guid)->count()}</td>
+                    <td class="graph severity-{$severity->value}">{for $i = 0; $i < $vulnerabilities->where('severity_guid', $severity->guid)->count(); $i++}█{/for}</td>
+                </tr>
+                {/foreach}
             </table>
 
-            <h5>Výskyt</h5>
-            <p class="detail-vuln-path">
-                {foreach $vulnerability->getPath() as $nodeInPath}
-                  {if $nodeInPath->name}{$nodeInPath->name} <span class="small">({$nodeInPath->type})</span>{else}{$nodeInPath->type}{/if} {sep}&rarr;{/sep}
+            <tocentry content="3.2 Přehled nálezů podle kategorie" level="1" />
+            <h3>3.2 Přehled nálezů podle kategorie</h3>
+            <table>
+                {foreach $categoriesDefinitions->whereNull('parent_guid')->where('level',2301)->sortBy('name')  as $category}
+                <tr>
+                    <td style="padding-right:50px;">{$category->name}</td>
+                    <td style="padding-right:50px;">{$vulnerabilities->getByCategory($category->code)->count()}</td>
+                    <td class="graph bg-graph">{for $i = 0; $i < $vulnerabilities->getByCategory($category->code)->count(); $i++}█{/for}</td>
+                </tr>
                 {/foreach}
+            </table>
+        </div>
+        <pagebreak />
+
+        <div class="section4">
+            <tocentry content="3.3 Hlavní nálezy" level="1" />
+            <h3>3.3 Hlavní nálezy</h3>
+            <p data-format="markdown">{$report->testing->main_findings}</p>
+
+            <tocentry content="3.4 Závěr" level="1" />
+            <h3>3.4 Závěr</h3>
+            <p data-format="markdown">{$report->testing->conclusion}</p>
+            <div n:if="$report->project->score" class="text-center">
+                <img class="img-severity" src="data:{$imgSeverityMime};base64,{$imgSeverity['severity-'.$report->project->score_value]}">
+            </div>
+        </div>
+        <pagebreak />
+
+        <!-- Popis testu -->
+        <div class="section5">
+            <tocentry content="4 Popis a průběh testu" />
+            <h2>4 Popis a průběh testu</h2>
+
+            <tocentry content="4.1 Předmět testu" level="1" />
+            <h3>4.1 Předmět testu</h3>
+            <p n:if="!$report->testing->subject_description">
+                Předmětem testu byla webová aplikace <b>{$report->target->name}</b> provozovaná na doméně <b>{$report->target->address}</b>
             </p>
-            {if $vulnerability->getLocalization() != "-" }<p>{$vulnerability->getLocalization()}</p>{/if}
+            <p data-format="markdown" n:if="$report->testing->subject_description">{$report->testing->subject_description}</p>
 
-            <h5>Popis zranitelnosti</h5>
-            <p data-format="markdown">{$vulnerability->getDescription()}</p>
+            <tocentry content="4.2 Podmínky testování a limity" level="1" />
+            <h3>4.2 Podmínky testování a limity</h3>
+            <p data-format="markdown">{$report->testing->conditions}</p>
 
-            <h5>Příčiny</h5>
-            <p data-format="markdown">{$vulnerability->getCauses()}</p>
+            <tocentry content="4.3 Použitá metodika testování" level="1" />
+            <h3>4.3 Použitá metodika testování</h3>
+            <p>Testy byly provedeny manuálním testováním podle následujících metodik a standardů:</p>
+            <ul>
+                {foreach $report->modules as $modul}
+                    <li>{$modul->name}</li>
+                {/foreach}
+            </ul>
 
-            <h5>Projevy</h5>
-            <p data-format="markdown">{$vulnerability->getDisplays()}</p>
+            <tocentry content="4.4 Kontakty" level="1" />
+            <h3>4.4 Kontakty</h3>
+            {foreach $report->project->contacts->where('type', 'contactTypeSupplier') as $contact}
+                <p>
+                    Jméno: {$contact->name}<br>
+                    Pozice: {$contact->role}<br>
+                    E-mail: {$contact->email}<br>
+                    Telefon: {$contact->phone}
+                </p>
+            {/foreach}
+        </div>
+        <pagebreak />
 
-            <h5>Dopady</h5>
-            <p data-format="markdown">{$vulnerability->getImpacts()}</p>
+        <!-- Detaily nálezů -->
+        <div class="section6">
+            <tocentry content="5 Zjištěné skutečnosti a nedostatky" />
+            <h2>5 Zjištěné skutečnosti a nedostatky</h2>
+            {var $categoryNo = 1}
+            {foreach $categoriesDefinitions->whereNull('parent')->where('level',2301)->sortBy('name')  as $category} {* 2301 = kategorie ASVS *}
+                {if $vulnerabilities->getByCategory($category->code)->isNotEmpty()}
+                    <tocentry content="5.{$categoryNo} {$category->name}" level="1" />
+                    <h3>5.{$categoryNo} {$category->name}</h3><br>
+                    {var $findInCategoryNo = 1}
+                    {var $outerIterator = $iterator}
+                    {foreach $vulnerabilities->getByCategory($category->code) as $vulnerability}
+                        <tocentry content="5.{$categoryNo}.{$findInCategoryNo} {$vulnerability->text->name}" level="2" />
+                        <h4>5.{$categoryNo}.{$findInCategoryNo} {$vulnerability->text->name}</h4>
+                        <h5>Závažnost</h5>
+                        <table class="detail-vuln-severity">
+                            <tr>
+                                <td rowspan="2" style="padding-right:10px;" n:if="$vulnerability->severity">
+                                    <img class="img-severity" src="data:{$imgSeverityMime};base64,{$imgSeverity['severity-'.$vulnerability->severity_value]}">
+                                </td>
+                                <td>
+                                    Subjektivně:
+                                </td>
+                                <td style="padding-right:10px; font-weight:bold;">
+                                    {$vulnerability->severity}
+                                </td>
+                                <td>
+                                    CVSS skóre:
+                                </td>
+                                <td style="font-weight:bold;">
+                                    {$vulnerability->cvss_score}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    CWE:
+                                </td>
+                                <td style="font-weight:bold;">
+                                    {$vulnerability->text->cwe}
+                                </td>
+                                <td>
+                                    CVSS řetězec:
+                                </td>
+                                <td style="font-weight:bold;">
+                                    {$vulnerability->cvss_vector}
+                                </td>
+                            </tr>
+                        </table>
 
-            <h5>Náprava / doporučení</h5>
-            <p data-format="markdown">{$vulnerability->getRecommendations()}</p>
+                        <h5>Popis zranitelnosti</h5>
+                        <p data-format="markdown">{$vulnerability->text->description}</p>
 
-            <div n:if="$vulnerability->getReferences()">
-              <h5>Reference</h5>
-              <ul n:inner-foreach="$vulnerability->getReferences() as $reference">
-                <li>{$reference->getName()}<br>
-                  <a href="{$reference->getUrl()}">{$reference->getUrl()}</a>
-                </li>
-              </ul>
-            </div>
+                        <h5>Příčiny</h5>
+                        <p data-format="markdown">{$vulnerability->text->causes}</p>
 
-            <div n:if="$vulnerability->getAttachments()">
-              <h5>Přílohy</h5>
-              <div n:inner-foreach="$vulnerability->getAttachments() as $attachment">
-                <p>{$attachment->getName()} ({$attachment->getFileName()})</p>
-                <img n:if="$attachment->getContent()" src="data:{$attachment->getMimeType()};base64,{$attachment->getContent()}" alt="{$attachment->getName()}">
-              </div>
-            </div>
-          </div>
-          <pagebreak n:if="($categoryNo != count($report->getFoundVulnerabilities()->getByCategory())) || ($findInCategoryNo != count($vulnerabilityGroupEntity->getChilds()))" />
-          {var $findInCategoryNo = $findInCategoryNo + 1}
-        {/foreach}
-        {var $categoryNo = $categoryNo + 1}
-      {/foreach}
-    </div>
+                        <h5>Projevy</h5>
+                        <p data-format="markdown">{$vulnerability->text->displays}</p>
 
-  </body>
+                        <h5>Dopady</h5>
+                        <p data-format="markdown">{$vulnerability->text->impacts}</p>
+
+                        <h5>Náprava / doporučení</h5>
+                        <p data-format="markdown">{$vulnerability->text->recommendations}</p>
+
+                        <h5>Výskyt</h5>
+                        <p>{$vulnerability->text->location}</p>
+
+                        <div n:if="$vulnerability->references->isNotEmpty()">
+                            <h5>Reference</h5>
+                            <ul n:inner-foreach="$vulnerability->references as $reference">
+                                <li>{$reference->name}<br>
+                                <a href="{$reference->url}">{$reference->url}</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div n:if="$attachments->where('node_guid', $vulnerability->vuln_guid)->isNotEmpty()">
+                            <h5>Přílohy</h5>
+                            <div n:inner-foreach="$attachments->where('node_guid', $vulnerability->vuln_guid) as $attachment">
+                                <p>{$attachment->name} ({$attachment->filename})</p>
+                                <img n:if="$attachment->content" src="data:{$attachment->mime_type};base64,{$attachment->content}" alt="{$attachment->name}">
+                            </div>
+                        </div>
+                        {var $findInCategoryNo = $findInCategoryNo + 1}
+                        <pagebreak n:if="!$iterator->last || !$outerIterator->last" />
+                    {/foreach}
+                    {var $categoryNo = $categoryNo + 1}
+                {/if}
+            {/foreach}
+        </div>
+    </body>
 </html>
