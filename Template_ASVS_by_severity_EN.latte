@@ -267,7 +267,7 @@
             <h3>{$report->info->created_at|date:'d.m.Y'}, version {$report->info->version}</h3>
             <div style="height: 100px;"></div>
             <h3>{$report->info->creator}</h3>
-            <h3>{$report->owner->name}</h3>
+            <h3>{$report->owner->company}</h3>
             <div style="text-align: center">
             <img class="logo" src="data:{$imgLogoMime};base64,{$imgLogo}">
             </div>
@@ -288,7 +288,7 @@
         <div class="section3">
             <tocentry content="2 Description of the Document" />
             <h2>2 Description of the Document</h2>
-            <p>This document contains the results of a penetration test commissioned by <b>{$report->owner->name}</b>. The purpose of the penetration test was to verify the security functionality of the web application <b>{$report->target->name}</b> hosted at the URL <b>{$report->target->address}</b> in practice. The penetration test was conducted at an anonymous level, without knowledge of the application's source code. The consultant from <b>{$report->owner->name}</b> performing the test had only limited knowledge of the customer's environment and primarily relied on information readily available to any Internet user. The testing aimed to uncover the potential for intrusion into the application (and other related elements, such as databases on the internal network) by a 'random' attacker (known as an 'outsider'), who has no understanding of the structure and content of the application and merely 'tries their luck'.</p>
+            <p>This document contains the results of a penetration test commissioned by <b>{$report->owner->company}</b>. The purpose of the penetration test was to verify the security functionality of the web application <b>{$report->target->name}</b> hosted at the URL <b>{$report->target->address}</b> in practice. The penetration test was conducted at an anonymous level, without knowledge of the application's source code. The consultant from <b>{$report->owner->company}</b> performing the test had only limited knowledge of the customer's environment and primarily relied on information readily available to any Internet user. The testing aimed to uncover the potential for intrusion into the application (and other related elements, such as databases on the internal network) by a 'random' attacker (known as an 'outsider'), who has no understanding of the structure and content of the application and merely 'tries their luck'.</p>
             <p>The document is divided into several parts:
             <ul>
                 <li><b>Management Summary</b> - Concise Overview of Test Progress Alongside Results</li>

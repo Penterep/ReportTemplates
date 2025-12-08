@@ -268,7 +268,7 @@
             <h3>{$report->info->created_at|date:'d.m.Y'}, verze {$report->info->version}</h3>
             <div style="height: 100px;"></div>
             <h3>{$report->info->creator}</h3>
-            <h3>{$report->owner->name}</h3>
+            <h3>{$report->owner->company}</h3>
             <div style="text-align: center">
             <img class="logo" src="data:{$imgLogoMime};base64,{$imgLogo}">
             </div>
@@ -289,7 +289,7 @@
         <div class="section3">
             <tocentry content="2 Popis dokumentu" />
             <h2>2 Popis dokumentu</h2>
-            <p>Tento dokument obsahuje seznam testů realizovaných během penetračního testu, jehož provedením byla pověřena společnost <b>{$report->owner->name}</b>. Penetrační test měl v praxi ověřit funkčnost zabezpečení webové aplikace <b>{$report->target->name}</b> provozované na adrese <b>{$report->target->address}</b>.</p>
+            <p>Tento dokument obsahuje seznam testů realizovaných během penetračního testu, jehož provedením byla pověřena společnost <b>{$report->owner->company}</b>. Penetrační test měl v praxi ověřit funkčnost zabezpečení webové aplikace <b>{$report->target->name}</b> provozované na adrese <b>{$report->target->address}</b>.</p>
             <p>Dokument je rozdělen do několika částí:
                 <ul>
                     <li><b>Manažerský souhrn</b> - stručný průřez průběhu testů společně s výsledky.</li>
