@@ -23,6 +23,7 @@
             body { font-family: system-ui, sans-serif; font-size:14px; }
             h3, h4, h5 { margin-bottom: 0px; margin-top: 12px; }
             p, ul { margin-top: 4px; text-align: justify;}
+            td, th {text-align: justify;}
             code { padding: 2px 4px; margin: 0; font-size: 85%; background-color: #f2f2f2; border-radius: 3px; border: 1px solid #b2b2b2; }
             .strong { font-weight: bold; font-size: 0.8rem; }
             .small { font-style:italic; font-size: 0.6rem; }
@@ -383,20 +384,47 @@
         </div>
         <pagebreak />
 
+        <!-- Technologie -->
+        <div class="section6">
+            <tocentry content="5 Identifikované technologie" />
+            <h2>5 Identifikované technologie</h2>
+            <p>Během testování byly identifikovány následující softwarové součásti:</p>
+            <table>
+            <thead>
+                <tr>
+                <th style="padding-right:12px;">Software</th>
+                <th style="padding-right:12px;">Verze</th>
+                <th style="text-align:center">Známé zranitelnosti</th>
+                </tr>
+            </thead>
+            <tbody>
+                {foreach $nodes->where('type', 'software')->sortBy('name') as $software}
+                {var $list = $vulnerabilities->where('node_guid', $software->guid)}
+                <tr>
+                    <td>{$software->name}</td>
+                    <td>{$software->properties->get('version')}</td>
+                    <td style="text-align:center">{foreach $list as $v}{if $v->text->code === 'PTV-WEB-SW-KNOWNVULN'}<span style="color:#c62828;font-weight:bold;">✖</span>{/if}{/foreach}</td>
+                </tr>
+                {/foreach}
+            </tbody>
+            </table>
+        </div>
+        <pagebreak />
+
         <!-- Detaily nálezů -->
         <div class="section6">
-            <tocentry content="5 Zjištěné skutečnosti a nedostatky" />
-            <h2>5 Zjištěné skutečnosti a nedostatky</h2>
+            <tocentry content="6 Zjištěné skutečnosti a nedostatky" />
+            <h2>6 Zjištěné skutečnosti a nedostatky</h2>
             {var $categoryNo = 1}
             {foreach $severities->sortByDesc('value') as $severity}
                 {if $vulnerabilities->where('severity_guid', $severity->guid)->isNotEmpty()}
-                    <tocentry content="5.{$categoryNo} {$severity->name} závažnost" level="1" />
-                    <h3>5.{$categoryNo} {$severity->name} závažnost</h3><br>
+                    <tocentry content="6.{$categoryNo} {$severity->name} závažnost" level="1" />
+                    <h3>6.{$categoryNo} {$severity->name} závažnost</h3><br>
                     {var $findInCategoryNo = 1}
                     {var $outerIterator = $iterator}
                     {foreach $vulnerabilities->where('severity_guid', $severity->guid) as $vulnerability}
-                        <tocentry content="5.{$categoryNo}.{$findInCategoryNo} {$vulnerability->text->name}" level="2" />
-                        <h4>5.{$categoryNo}.{$findInCategoryNo} {$vulnerability->text->name}</h4>
+                        <tocentry content="6.{$categoryNo}.{$findInCategoryNo} {$vulnerability->text->name}" level="2" />
+                        <h4>6.{$categoryNo}.{$findInCategoryNo} {$vulnerability->text->name}</h4>
                         <h5>Závažnost</h5>
                         <table class="detail-vuln-severity">
                             <tr>
