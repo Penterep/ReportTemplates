@@ -23,7 +23,6 @@
             body { font-family: system-ui, sans-serif; font-size:14px; }
             h3, h4, h5 { margin-bottom: 0px; margin-top: 12px; }
             p, ul { margin-top: 4px; text-align: justify;}
-            td, th {text-align: justify;}
             code { padding: 2px 4px; margin: 0; font-size: 85%; background-color: #f2f2f2; border-radius: 3px; border: 1px solid #b2b2b2; }
             .strong { font-weight: bold; font-size: 0.8rem; }
             .small { font-style:italic; font-size: 0.6rem; }
@@ -386,28 +385,28 @@
 
         <!-- Technologie -->
         <div class="section6">
-            <tocentry content="5 Identifikované technologie" />
-            <h2>5 Identifikované technologie</h2>
-            <p>Během testování byly identifikovány následující softwarové součásti:</p>
-            <table>
+          <tocentry content="5 Identifikované technologie" />
+          <h2>5 Identifikované technologie</h2>
+          <p>Během testování byly identifikovány následující softwarové součásti:</p>
+          <table>
             <thead>
-                <tr>
+              <tr>
                 <th style="padding-right:12px;">Software</th>
                 <th style="padding-right:12px;">Verze</th>
                 <th style="text-align:center">Známé zranitelnosti</th>
-                </tr>
+              </tr>
             </thead>
             <tbody>
-                {foreach $nodes->where('type', 'software')->sortBy('name') as $software}
+              {foreach $nodes->where('type', 'software')->sortBy('name') as $software}
                 {var $list = $vulnerabilities->where('node_guid', $software->guid)}
                 <tr>
-                    <td>{$software->name}</td>
-                    <td>{$software->properties->get('version')}</td>
-                    <td style="text-align:center">{foreach $list as $v}{if $v->text->code === 'PTV-WEB-SW-KNOWNVULN'}<span style="color:#c62828;font-weight:bold;">✖</span>{/if}{/foreach}</td>
+                  <td>{$software->name}</td>
+                  <td>{$software->properties->get('version')}</td>
+                  <td style="text-align:center">{foreach $list as $v}{if $v->text->code === 'PTV-WEB-SW-KNOWNVULN'}<span style="color:#c62828;font-weight:bold;">✖</span>{/if}{/foreach}</td>
                 </tr>
-                {/foreach}
+              {/foreach}
             </tbody>
-            </table>
+          </table>
         </div>
         <pagebreak />
 
