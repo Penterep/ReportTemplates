@@ -481,7 +481,7 @@
                         <p data-format="markdown">{$vulnerability->text->recommendations}</p>
 
                         <h5>Výskyt</h5>
-                        <p>{* $vulnerability->location *}</p>
+                        <p>{$vulnerability->location}</p>
 
                         <div n:if="$vulnerability->references->isNotEmpty()">
                             <h5>Reference</h5>
