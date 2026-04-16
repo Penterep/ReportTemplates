@@ -34,6 +34,7 @@
             .img-severity { width: 100px; }
             .detail-vuln-severity { margin-left:-4px; margin-top:4px; margin-bottom: 24px; }
             .detail-vuln-path {}
+            .left { text-align: left }
 
             /* Color definitions */
             .section4 .severity-1 { color: blue; }
@@ -308,7 +309,7 @@
             <tocentry content="3.1 Přehled nálezů podle závažnosti" level="1" />
             <h3>3.1 Přehled nálezů podle závažnosti</h3>
             <table>
-                {foreach $severities->sortBy('value') as $severity}
+                {foreach $severities->where('value','>',0)->sortBy('value') as $severity}
                 <tr>
                     <td style="padding-right:50px;">{$severity->name}</td>
                     <td style="padding-right:50px;">{$vulnerabilities->where('severity_guid', $severity->guid)->count()}</td>
@@ -415,7 +416,7 @@
             <tocentry content="6 Zjištěné skutečnosti a nedostatky" />
             <h2>6 Zjištěné skutečnosti a nedostatky</h2>
             {var $categoryNo = 1}
-            {foreach $severities->sortByDesc('value') as $severity}
+            {foreach $severities->where('value','>',0)->sortByDesc('value') as $severity}
                 {if $vulnerabilities->where('severity_guid', $severity->guid)->isNotEmpty()}
                     <tocentry content="6.{$categoryNo} {$severity->name} závažnost" level="1" />
                     <h3>6.{$categoryNo} {$severity->name} závažnost</h3><br>
@@ -481,7 +482,7 @@
                         <p data-format="markdown">{$vulnerability->text->recommendations}</p>
 
                         <h5>Výskyt</h5>
-                        <p>{$vulnerability->location}</p>
+                        <p class="left">{$vulnerability->location}</p>
 
                         <div n:if="$vulnerability->references->isNotEmpty()">
                             <h5>Reference</h5>

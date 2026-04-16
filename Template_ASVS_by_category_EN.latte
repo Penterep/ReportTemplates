@@ -34,6 +34,7 @@
             .img-severity { width: 100px; }
             .detail-vuln-severity { margin-left:-4px; margin-top:4px; margin-bottom: 24px; }
             .detail-vuln-path {}
+            .left { text-align: left }
 
             /* Color definitions */
             .section4 .severity-1 { color: blue; }
@@ -308,7 +309,7 @@
             <tocentry content="3.1 Summary of Findings by Severity" level="1" />
             <h3>3.1 Summary of Findings by Severity</h3>
             <table>
-                {foreach $severities->sortBy('value') as $severity}
+                {foreach $severities->where('value','>',0)->sortBy('value') as $severity}
                 <tr>
                     <td style="padding-right:50px;">{$severity->name}</td>
                     <td style="padding-right:50px;">{$vulnerabilities->where('severity_guid', $severity->guid)->count()}</td>
@@ -389,12 +390,12 @@
             <h2>5 Findings and Deficiencies</h2>
             {var $categoryNo = 1}
             {foreach $categoriesDefinitions->whereNull('parent')->where('level',2301)->sortBy('name')  as $category} {* 2301 = kategorie ASVS *}
-                {if $vulnerabilities->getByCategory($category->code)->isNotEmpty()}
+                {if $vulnerabilities->getByCategory($category->code)->where('severity_value','>',0)->isNotEmpty()}
                     <tocentry content="5.{$categoryNo} {$category->name}" level="1" />
                     <h3>5.{$categoryNo} {$category->name}</h3><br>
                     {var $findInCategoryNo = 1}
                     {var $outerIterator = $iterator}
-                    {foreach $vulnerabilities->getByCategory($category->code) as $vulnerability}
+                    {foreach $vulnerabilities->getByCategory($category->code)->where('severity_value','>',0) as $vulnerability}
                         <tocentry content="5.{$categoryNo}.{$findInCategoryNo} {$vulnerability->text->name}" level="2" />
                         <h4>5.{$categoryNo}.{$findInCategoryNo} {$vulnerability->text->name}</h4>
                         <h5>Severity</h5>
@@ -448,7 +449,7 @@
                         <p data-format="markdown">{$vulnerability->text->recommendations}</p>
 
                         <h5>Location</h5>
-                        <p>{$vulnerability->location}</p>
+                        <p class="left">{$vulnerability->location}</p>
 
                         <div n:if="$vulnerability->references->isNotEmpty()">
                             <h5>References</h5>
