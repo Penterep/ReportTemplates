@@ -462,8 +462,12 @@
                         <div n:if="$attachments->where('node_guid', $vulnerability->vuln_guid)->isNotEmpty()">
                             <h5>Attachments</h5>
                             <div n:inner-foreach="$attachments->where('node_guid', $vulnerability->vuln_guid) as $attachment">
-                                <p>{$attachment->name} ({$attachment->filename})</p>
-                                <img n:if="$attachment->content" src="data:{$attachment->mime_type};base64,{$attachment->content}" alt="{$attachment->name}">
+                                <figure style="page-break-inside: avoid; break-inside: avoid; margin: 0 0 1rem;">
+                                    <img n:if="$attachment->content" src="data:{$attachment->mime_type};base64,{$attachment->content}" alt="{$attachment->name}">
+                                    <figcaption style="margin-top: 0.5rem;">
+                                        <p>{$attachment->name} ({$attachment->filename})</p>
+                                    </figcaption>
+                                </figure>
                             </div>
                         </div>
                         {var $findInCategoryNo = $findInCategoryNo + 1}
