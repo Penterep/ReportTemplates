@@ -1216,8 +1216,7 @@
     {foreach $nodes->where('type', 'evidence') as $evidence}
         <tocentry content="4.{$evidenceNo} {$evidence->name}" level="1" />
         <h3>4.{$evidenceNo} {$evidence->name}</h3>
-        {$evidence->properties->get('description')}
-        <h5>Přílohy</h5>
+        <p data-format="markdown">{$evidence->properties->get('description')}</p>
         <div n:inner-foreach="$attachments->where('node_guid', $evidence->guid) as $attachment">
           <p>{$attachment->name} ({$attachment->filename})</p>
           <img n:if="$attachment->content" src="data:{$attachment->mime_type};base64,{$attachment->content}" alt="{$attachment->name}">
@@ -1228,8 +1227,7 @@
         {foreach $nodes->where('type', 'verification')->where('parent_guid', $evidence->guid) as $verification}
             <tocentry content="4.{$evidenceNo}.1.{$verificationNo} {$verification->name}" level="3" />
             <h4>4.{$evidenceNo}.1.{$verificationNo} {$verification->name}</h4>
-            {$verification->properties->get('description')}<br>
-            <h5>Přílohy</h5>
+            <p data-format="markdown">{$verification->properties->get('description')}</p>
             <div n:inner-foreach="$attachments->where('node_guid', $verification->guid) as $attachment">
               <figure style="page-break-inside: avoid; break-inside: avoid; margin: 0 0 1rem;">
                 <img n:if="$attachment->content" src="data:{$attachment->mime_type};base64,{$attachment->content}" alt="{$attachment->name}">
