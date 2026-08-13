@@ -1,0 +1,435 @@
+<!-- Images for graphical representation of severity -->
+{var $imgSeverityMime = "image/svg+xml"}
+{var $imgSeverity = [
+"severity-1" => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojMDBiN2JhO30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzFfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTY0LjczLDcxYTMwLDMwLDAsMCwwLTUuNjUsMTQuNjksMy40NSwzLjQ1LDAsMCwxLTMuNDEsMy4xNUgxNC4xOGEzLjQzLDMuNDMsMCwwLDEtMy40My0zLjU5QTc4LjExLDc4LjExLDAsMCwxLDI1LjY5LDQyLjY4WiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NiwzLjQ2LDAsMCwxLTMuNDItMy4xNkEzMC40MywzMC40MywwLDAsMCw3OS44OCw2MHYwYTMwLjMzLDMwLjMzLDAsMCwwLTE1LjE3LDExbC0zOS0yOC4zN0E3OC43Nyw3OC43NywwLDAsMSw2NC43NywxNC4xOWwwLS4xNUE3OC44Miw3OC44MiwwLDAsMSwxNjcuNzgsODUuMzhaIi8+PHBhdGggY2xhc3M9ImNscy00IiBkPSJNODkuNSw3Ni4xOHYwbC00MSwuNTdMODcuNzYsODguNTV2MGE2LjA3LDYuMDcsMCwwLDAsLjg0LjIxLDYuMzIsNi4zMiwwLDEsMCwxLjc2LTEyLjUxQTUsNSwwLDAsMCw4OS41LDc2LjE4WiIvPjwvc3ZnPg==",
+"severity-2" => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojMTk4NzU0O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzJfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTc5Ljg5LDYwQTMwLjM5LDMwLjM5LDAsMCwwLDY0LjcyLDcxYTMwLjA5LDMwLjA5LDAsMCwwLTUuNjQsMTQuNjksMy40NiwzLjQ2LDAsMCwxLTMuNDIsMy4xNUgxNC4xOGEzLjQzLDMuNDMsMCwwLDEtMy40My0zLjU5QTc4LjY3LDc4LjY3LDAsMCwxLDY1LDE0LjEyWiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NywzLjQ3LDAsMCwxLTMuNDItMy4xNkEzMC4zOSwzMC4zOSwwLDAsMCw4OS4wOCw1OC41N2EzMC40MiwzMC40MiwwLDAsMC05LjQsMS40OGwtMTUtNDZBNzguOCw3OC44LDAsMCwxLDE2Ny43OCw4NS4zOFoiLz48cGF0aCBjbGFzcz0iY2xzLTQiIGQ9Ik04My45MSw4Ni4yMmwwLDAtMjMtMzMuODlMOTMuMDUsNzcuN2wwLDBhNS44OSw1Ljg5LDAsMCwxLC42NS41Nyw2LjMyLDYuMzIsMCwxLDEtOS4yNCw4LjYyQTYuOTIsNi45MiwwLDAsMSw4My45MSw4Ni4yMloiLz48L3N2Zz4=",
+"severity-3" => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZmZhNzI2O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzNfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTExMy40MywxNGwtMTUsNDZBMzAuMzIsMzAuMzIsMCwwLDAsNzkuODgsNjB2MEEzMC4zOSwzMC4zOSwwLDAsMCw2NC43Miw3MWEzMC4wOSwzMC4wOSwwLDAsMC01LjY0LDE0LjY5LDMuNDUsMy40NSwwLDAsMS0zLjQxLDMuMTVIMTQuMThhMy40MywzLjQzLDAsMCwxLTMuNDMtMy41OSw3OC42NSw3OC42NSwwLDAsMSw1NC03MS4xbDAtLjE1YTc5LjE2LDc5LjE2LDAsMCwxLDQ4LjcxLDBaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMTY3Ljc4LDg1LjM4YTMuNDQsMy40NCwwLDAsMS0zLjQzLDMuNmgtNDEuNmEzLjQ1LDMuNDUsMCwwLDEtMy40MS0zLjE2QTMwLjQ3LDMwLjQ3LDAsMCwwLDk4LjQ3LDYwLjA1bDE1LTQ2YTc4Ljg0LDc4Ljg0LDAsMCwxLDU0LjM1LDcxLjM0WiIvPjxwYXRoIGNsYXNzPSJjbHMtNCIgZD0iTTk1LjUsODEuOGgwTDg5LjI3LDQxLjMsODMsODEuOGgwYTcuODQsNy44NCwwLDAsMC0uMDguODYsNi4zMiw2LjMyLDAsMSwwLDEyLjYzLDBBNiw2LDAsMCwwLDk1LjUsODEuOFoiLz48L3N2Zz4=",
+"severity-4" => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZjE1YTI0O30uY2xzLTN7ZmlsbDojY2NjO30uY2xzLTR7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzRfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE1Mi44MSw0Mi42NiwxMTMuNjgsNzEuMWEzMC4zNCwzMC4zNCwwLDAsMC0xNS4yMS0xMUEzMC4yOSwzMC4yOSwwLDAsMCw3OS44OSw2MHYwQTMwLjQsMzAuNCwwLDAsMCw1OS4wOCw4NS43M2EzLjQ1LDMuNDUsMCwwLDEtMy40MSwzLjE1SDE0LjE4YTMuNDQsMy40NCwwLDAsMS0zLjQzLTMuNTksNzguNjcsNzguNjcsMCwwLDEsNTQtNzEuMTFsMC0uMTRhNzguNzcsNzguNzcsMCwwLDEsODguMDgsMjguNjJaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMTY0LjM1LDg5aC00MS42YTMuNDcsMy40NywwLDAsMS0zLjQyLTMuMTYsMzAsMzAsMCwwLDAtNS42Ni0xNC43MkwxNTIuOCw0Mi42N2E3OC4xNyw3OC4xNywwLDAsMSwxNSw0Mi43MUEzLjQ0LDMuNDQsMCwwLDEsMTY0LjM1LDg5WiIvPjxwYXRoIGNsYXNzPSJjbHMtNCIgZD0iTTk0LjUsODYuMjJsMCwwLDIzLTMzLjg5TDg1LjM3LDc3LjdsMCwwYTcsNywwLDAsMC0uNjUuNTdBNi4zMiw2LjMyLDAsMCwwLDk0LDg2LjkxLDUuNjcsNS42NywwLDAsMCw5NC41LDg2LjIyWiIvPjwvc3ZnPg==",
+"severity-5" => "PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNzguNTMgOTkuMDkiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDojZTZlNmU2O30uY2xzLTJ7ZmlsbDojZDYzMTMxO30uY2xzLTN7ZmlsbDojMzMzO308L3N0eWxlPjwvZGVmcz48dGl0bGU+QXJjXzVfNzwvdGl0bGU+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iMTc4LjUzIiBoZWlnaHQ9Ijk5LjA5IiByeD0iOC42MyIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTE2Ny43OCw4NS4zOGEzLjQ0LDMuNDQsMCwwLDEtMy40MywzLjZoLTQxLjZhMy40NSwzLjQ1LDAsMCwxLTMuNDEtMy4xNkEzMC40LDMwLjQsMCwwLDAsNzkuODksNjB2MEEzMC40LDMwLjQsMCwwLDAsNTkuMDgsODUuNzNhMy40NCwzLjQ0LDAsMCwxLTMuNDEsMy4xNUgxNC4xOWEzLjQ0LDMuNDQsMCwwLDEtMy40NC0zLjU5LDc4LjY1LDc4LjY1LDAsMCwxLDU0LTcxLjFsMC0uMTVBNzguNzksNzguNzksMCwwLDEsMTY3Ljc4LDg1LjM4WiIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTkwLjYsODguNzF2MEwxMjkuODQsNzYuOWwtNDEtLjU2djBhNi4xOCw2LjE4LDAsMCwwLS44NiwwLDYuMzIsNi4zMiwwLDEsMCwxLjc2LDEyLjUxQTUuNTgsNS41OCwwLDAsMCw5MC42LDg4LjcxWiIvPjwvc3ZnPg==",
+]}
+
+{var $severityLevels = [
+    'vulnSeverityCritical' => 5,
+    'vulnSeverityHigh' => 4,
+    'vulnSeverityMiddle' => 3,
+    'vulnSeverityLow' => 2,
+    'vulnSeverityInfo' => 1,
+    'vulnSeverityIrrelevant' => 0,
+]}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>{ifset $title}{$title}{else}Report PENTEREP{/ifset}</title>
+  <report-css/>
+</head>
+
+<body>
+
+  <!-- Title page -->
+  <div class="section1">
+    <h1 style="padding-top:130px;">Web Application Security Test Report</h1>
+    <h2>(by tree)</h2>
+    <hr />
+    <h2>{$report->project->name}</h2>
+    <h2>{$report->target->address}</h2>
+    <hr />
+    <h3>{$report->info->created_at|date:'d.m.Y'}, version {$report->info->version}</h3>
+    <h3>{$report->info->creator}</h3>
+    <h3>{$report->owner->company}</h3>
+    <div style="text-align:center">
+      <img class="logo" src="data:{$imgLogoMime};base64,{$imgLogo}" alt="logo">
+    </div>
+  </div>
+  <div class="pagebreak"></div>
+
+  <!-- Table of Contents -->
+  <section class="toc">
+    <h2 class="bookmark-0">1 Table of Contents</h2>
+    <ul>
+      <li><a href="#sec-popis">2 Description of the Document</a></li>
+      <li><a href="#sec-souhrn">3 Management Summary</a></li>
+      <li class="toc-level-1"><a href="#sec-souhrn-severity">3.1 Summary of Findings by Severity</a></li>
+      <li class="toc-level-1"><a href="#sec-souhrn-kategorie">3.2 Summary of Findings by Category</a></li>
+      <li class="toc-level-1"><a href="#sec-souhrn-hlavni">3.3 Key Findings</a></li>
+      <li class="toc-level-1"><a href="#sec-souhrn-zaver">3.4 Conclusion</a></li>
+      <li><a href="#sec-popis-testu">4 Description and Progress of the Test</a></li>
+      <li><a href="#sec-strom">5 List of Tested Nodes</a></li>
+      {foreach $nodes->whereNull('parent_guid')->sortBy('name')->values() as $tocNode}
+        <li class="toc-level-1"><a href="#node-{$tocNode->guid}">5.{$iterator->counter} {$tocNode->name}</a></li>
+      {/foreach}
+      <li><a href="#sec-nalezy">6 List of Identified Vulnerabilities (by Severity)</a></li>
+      {foreach $severityLevels as $code => $level}
+        {if $level > 0 && $vulnerabilities->where('severity_code', $code)->isNotEmpty()}
+          <li class="toc-level-1"><a href="#sev-{$iterator->counter}">{$vulnerabilities->where('severity_code', $code)->first()?->severity ?? $code}</a></li>
+        {/if}
+      {/foreach}
+    </ul>
+  </section>
+  <div class="pagebreak"></div>
+
+  <!-- Description of the Document -->
+  <div class="section3">
+    <h2 id="sec-popis" class="bookmark-0">2 Description of the Document</h2>
+    <p>This document contains the results of a penetration test commissioned by <b>{$report->owner->company}</b>. The purpose of the penetration test was to verify the security functionality of the web application <b>{$report->target->name}</b> hosted at the URL <b>{$report->target->address}</b> in practice. The penetration test was conducted at an anonymous level, without knowledge of the application's source code. The consultant from <b>{$report->owner->company}</b> performing the test had only limited knowledge of the customer's environment and primarily relied on information readily available to any Internet user. The testing aimed to uncover the potential for intrusion into the application (and other related elements, such as databases on the internal network) by a 'random' attacker (known as an 'outsider'), who has no understanding of the structure and content of the application and merely 'tries their luck'.</p>
+    <p>The document is divided into several parts:
+    <ul>
+      <li><b>Management Summary</b> - Concise Overview of Test Progress Alongside Results</li>
+      <li><b>Test Description</b> - Description of the Test Methodology</li>
+      <li><b>List of Tested Nodes</b> - Tree of the application components the tests were performed on</li>
+      <li><b>Found Facts</b> - Deficiencies and other significant information identified during the test execution</li>
+    </ul>
+    </p>
+    <p>This report describes the findings made during the tests and the recommendations resulting from them.</p>
+  </div>
+  <div class="pagebreak"></div>
+
+  <!-- Management Summary -->
+  <div class="section4">
+    <h2 id="sec-souhrn" class="bookmark-0">3 Management Summary</h2>
+
+    <h3 id="sec-souhrn-severity" class="bookmark-1">3.1 Summary of Findings by Severity</h3>
+    <table>
+      {foreach $severityLevels as $code => $level}
+        {if $level > 0}
+          {var $found = $vulnerabilities->where('severity_code', $code)}
+          <tr>
+            <td style="padding-right:50px;">{$found->first()?->severity ?? $code}</td>
+            <td style="padding-right:50px;">{$found->count()}</td>
+            <td class="graph severity-{$level}">{for $i = 0; $i < $found->count(); $i++}█{/for}</td>
+          </tr>
+        {/if}
+      {/foreach}
+    </table>
+
+    <h3 id="sec-souhrn-kategorie" class="bookmark-1">3.2 Summary of Findings by Category</h3>
+    <table>
+      {foreach $categoriesDefinitions->where('category', 'L_VULNERABILITY_CATEGORY_MAIN_ASVS')->whereNull('parent_guid')->sortBy('name') as $category}
+        <tr>
+          <td style="padding-right:50px;">{$category->name}</td>
+          <td style="padding-right:50px;">{$vulnerabilities->getByCategory($category->code)->count()}</td>
+          <td class="graph bg-graph">{for $i = 0; $i < $vulnerabilities->getByCategory($category->code)->count(); $i++}█{/for}</td>
+        </tr>
+      {/foreach}
+    </table>
+  </div>
+  <div class="pagebreak"></div>
+
+  <div class="section4">
+    <h3 id="sec-souhrn-hlavni" class="bookmark-1">3.3 Key Findings</h3>
+    <p data-format="markdown">{$report->testing->main_findings}</p>
+
+    <h3 id="sec-souhrn-zaver" class="bookmark-1">3.4 Conclusion</h3>
+    <p data-format="markdown">{$report->testing->conclusion}</p>
+    <div n:if="$report->project->score_value" style="text-align:center">
+      <img class="img-severity" src="data:{$imgSeverityMime};base64,{$imgSeverity['severity-'.$report->project->score_value]}" alt="">
+    </div>
+  </div>
+  <div class="pagebreak"></div>
+
+  <!-- Description and Progress of the Test -->
+  <div class="section5">
+    <h2 id="sec-popis-testu" class="bookmark-0">4 Description and Progress of the Test</h2>
+
+    <h3 class="bookmark-1">4.1 Subject of the Test</h3>
+    <p n:if="!$report->testing->subject_description">
+      The subject of the test was the web application <b>{$report->target->name}</b> operated on the domain <b>{$report->target->address}</b>.
+    </p>
+    <p data-format="markdown" n:if="$report->testing->subject_description">{$report->testing->subject_description}</p>
+
+    <h3 class="bookmark-1">4.2 Testing Conditions and Limitations</h3>
+    <p data-format="markdown">{$report->testing->conditions}</p>
+
+    <h3 class="bookmark-1">4.3 The Testing Methodology</h3>
+    <p>The tests were conducted through manual testing according to the following methodologies and standards:</p>
+    <ul>
+      {foreach $report->modules as $modul}
+        <li>{$modul->name}</li>
+      {/foreach}
+    </ul>
+
+    <h3 class="bookmark-1">4.4 Contacts</h3>
+    {foreach $report->project->contacts->where('type', 'contactTypeSupplier') as $contact}
+      <p>
+        Name: {$contact->name}<br>
+        Role: {$contact->role}<br>
+        E-mail: {$contact->email}<br>
+        Phone: {$contact->phone}
+      </p>
+    {/foreach}
+  </div>
+  <div class="pagebreak"></div>
+
+  <!-- List of Tested Nodes (tree) -->
+  <div class="section7">
+    <h2 id="sec-strom" class="bookmark-0">5 List of Tested Nodes</h2>
+
+    {* The tree is unrolled to 6 levels manually - the Latte sandbox does not allow {include}, so a recursive block cannot be used. *}
+    {* ── Level 1 ── *}
+    {foreach $nodes->whereNull('parent_guid')->sortBy('name')->values() as $node1}
+      {var $num1 = '5.' . $iterator->counter}
+      <div class="tree-node tree-depth-1">
+        <div id="node-{$node1->guid}" class="node-title bookmark-1">{$num1} {$node1->name}<span n:if="$node1->type" class="node-type"> &mdash; {$node1->type}</span></div>
+        <div class="node-body">
+          <table class="node-props" n:if="$node1->properties">
+            {foreach $node1->properties->toArray() as $propKey => $propValue}
+              {if $propKey !== 'group'}
+                <tr>
+                  <td class="prop-key">{$propKey}:</td>
+                  <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
+                </tr>
+              {/if}
+            {/foreach}
+          </table>
+          {var $vulns1 = $vulnerabilities->where('node_guid', $node1->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
+          <div class="node-vulns" n:if="$vulns1->isNotEmpty()">
+            <span class="vulns-label">Vulnerabilities:</span>
+            <ul n:inner-foreach="$vulns1 as $nv">
+              <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {* ── Level 2 ── *}
+      {foreach $nodes->where('parent_guid', $node1->guid)->sortBy('name')->values() as $node2}
+        {var $num2 = $num1 . '.' . $iterator->counter}
+        <div class="tree-node tree-depth-2">
+          <div id="node-{$node2->guid}" class="node-title bookmark-2">{$num2} {$node2->name}<span n:if="$node2->type" class="node-type"> &mdash; {$node2->type}</span></div>
+          <div class="node-body">
+            <table class="node-props" n:if="$node2->properties">
+              {foreach $node2->properties->toArray() as $propKey => $propValue}
+                {if $propKey !== 'group'}
+                  <tr>
+                    <td class="prop-key">{$propKey}:</td>
+                    <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
+                  </tr>
+                {/if}
+              {/foreach}
+            </table>
+            {var $vulns2 = $vulnerabilities->where('node_guid', $node2->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
+            <div class="node-vulns" n:if="$vulns2->isNotEmpty()">
+              <span class="vulns-label">Vulnerabilities:</span>
+              <ul n:inner-foreach="$vulns2 as $nv">
+                <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {* ── Level 3 ── *}
+        {foreach $nodes->where('parent_guid', $node2->guid)->sortBy('name')->values() as $node3}
+          {var $num3 = $num2 . '.' . $iterator->counter}
+          <div class="tree-node tree-depth-3">
+            <div id="node-{$node3->guid}" class="node-title bookmark-3">{$num3} {$node3->name}<span n:if="$node3->type" class="node-type"> &mdash; {$node3->type}</span></div>
+            <div class="node-body">
+              <table class="node-props" n:if="$node3->properties">
+                {foreach $node3->properties->toArray() as $propKey => $propValue}
+                  {if $propKey !== 'group'}
+                    <tr>
+                      <td class="prop-key">{$propKey}:</td>
+                      <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
+                    </tr>
+                  {/if}
+                {/foreach}
+              </table>
+              {var $vulns3 = $vulnerabilities->where('node_guid', $node3->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
+              <div class="node-vulns" n:if="$vulns3->isNotEmpty()">
+                <span class="vulns-label">Vulnerabilities:</span>
+                <ul n:inner-foreach="$vulns3 as $nv">
+                  <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {* ── Level 4 ── *}
+          {foreach $nodes->where('parent_guid', $node3->guid)->sortBy('name')->values() as $node4}
+            {var $num4 = $num3 . '.' . $iterator->counter}
+            <div class="tree-node tree-depth-4">
+              <div id="node-{$node4->guid}" class="node-title bookmark-4">{$num4} {$node4->name}<span n:if="$node4->type" class="node-type"> &mdash; {$node4->type}</span></div>
+              <div class="node-body">
+                <table class="node-props" n:if="$node4->properties">
+                  {foreach $node4->properties->toArray() as $propKey => $propValue}
+                    {if $propKey !== 'group'}
+                      <tr>
+                        <td class="prop-key">{$propKey}:</td>
+                        <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
+                      </tr>
+                    {/if}
+                  {/foreach}
+                </table>
+                {var $vulns4 = $vulnerabilities->where('node_guid', $node4->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
+                <div class="node-vulns" n:if="$vulns4->isNotEmpty()">
+                  <span class="vulns-label">Vulnerabilities:</span>
+                  <ul n:inner-foreach="$vulns4 as $nv">
+                    <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {* ── Level 5 ── *}
+            {foreach $nodes->where('parent_guid', $node4->guid)->sortBy('name')->values() as $node5}
+              {var $num5 = $num4 . '.' . $iterator->counter}
+              <div class="tree-node tree-depth-5">
+                <div id="node-{$node5->guid}" class="node-title bookmark-5">{$num5} {$node5->name}<span n:if="$node5->type" class="node-type"> &mdash; {$node5->type}</span></div>
+                <div class="node-body">
+                  <table class="node-props" n:if="$node5->properties">
+                    {foreach $node5->properties->toArray() as $propKey => $propValue}
+                      {if $propKey !== 'group'}
+                        <tr>
+                          <td class="prop-key">{$propKey}:</td>
+                          <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
+                        </tr>
+                      {/if}
+                    {/foreach}
+                  </table>
+                  {var $vulns5 = $vulnerabilities->where('node_guid', $node5->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
+                  <div class="node-vulns" n:if="$vulns5->isNotEmpty()">
+                    <span class="vulns-label">Vulnerabilities:</span>
+                    <ul n:inner-foreach="$vulns5 as $nv">
+                      <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {* ── Level 6 ── *}
+              {foreach $nodes->where('parent_guid', $node5->guid)->sortBy('name')->values() as $node6}
+                {var $num6 = $num5 . '.' . $iterator->counter}
+                <div class="tree-node tree-depth-6">
+                  <div id="node-{$node6->guid}" class="node-title bookmark-6">{$num6} {$node6->name}<span n:if="$node6->type" class="node-type"> &mdash; {$node6->type}</span></div>
+                  <div class="node-body">
+                    <table class="node-props" n:if="$node6->properties">
+                      {foreach $node6->properties->toArray() as $propKey => $propValue}
+                        {if $propKey !== 'group'}
+                          <tr>
+                            <td class="prop-key">{$propKey}:</td>
+                            <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
+                          </tr>
+                        {/if}
+                      {/foreach}
+                    </table>
+                    {var $vulns6 = $vulnerabilities->where('node_guid', $node6->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
+                    <div class="node-vulns" n:if="$vulns6->isNotEmpty()">
+                      <span class="vulns-label">Vulnerabilities:</span>
+                      <ul n:inner-foreach="$vulns6 as $nv">
+                        <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              {/foreach}
+            {/foreach}
+          {/foreach}
+        {/foreach}
+      {/foreach}
+    {/foreach}
+  </div>
+  <div class="pagebreak"></div>
+
+  <!-- Findings details -->
+  <div class="section6">
+    <h2 id="sec-nalezy" class="bookmark-0">6 List of Identified Vulnerabilities (by Severity)</h2>
+
+    {var $categoryNo = 1}
+    {var $firstFinding = true}
+    {foreach $severityLevels as $code => $level}
+      {if $level > 0}
+        {var $found = $vulnerabilities->where('severity_code', $code)}
+        {if $found->isNotEmpty()}
+          <div class="pagebreak" n:if="!$firstFinding"></div>
+          <h3 id="sev-{$iterator->counter}" class="bookmark-1">6.{$categoryNo} {$found->first()?->severity ?? $code} severity</h3>
+          {var $findingNo = 1}
+
+          {foreach $found->groupBy('text.code') as $vulnGroup}
+            {var $vulnerability = $vulnGroup->first()}
+            <div class="pagebreak" n:if="!$firstFinding && !$iterator->first"></div>
+            <h4 id="vuln-{$vulnerability->text->code}" class="bookmark-2">6.{$categoryNo}.{$findingNo} {$vulnerability->text->name}</h4>
+
+            <h5>Severity</h5>
+            <table class="detail-vuln-severity">
+              <tr>
+                <td rowspan="2" style="padding-right:10px;">
+                  <img class="img-severity" src="data:{$imgSeverityMime};base64,{$imgSeverity['severity-'.$level]}" alt="">
+                </td>
+                <td>Subjectively:</td>
+                <td style="padding-right:10px; font-weight:bold;">{$vulnerability->severity}</td>
+                <td>CVSS score:</td>
+                <td style="font-weight:bold;">{$vulnerability->cvss_score}</td>
+              </tr>
+              <tr>
+                <td>CWE:</td>
+                <td style="font-weight:bold;">{$vulnerability->text->cwe}</td>
+                <td>CVSS string:</td>
+                <td style="font-weight:bold;">{$vulnerability->cvss_vector}</td>
+              </tr>
+            </table>
+
+            <h5>Categorization</h5>
+            <p>
+              {foreach $vulnerability->categories as $category}
+                {$category->name}<br>
+              {/foreach}
+            </p>
+
+            <h5>Vulnerability Description</h5>
+            <p data-format="markdown">{$vulnerability->text->description}</p>
+
+            <h5>Causes</h5>
+            <p data-format="markdown">{$vulnerability->text->causes}</p>
+
+            <h5>Symptoms</h5>
+            <p data-format="markdown">{$vulnerability->text->displays}</p>
+
+            <h5>Impacts</h5>
+            <p data-format="markdown">{$vulnerability->text->impacts}</p>
+
+            <h5>Remediation / Recommendations</h5>
+            <p data-format="markdown">{$vulnerability->text->recommendations}</p>
+
+            <h5>Location</h5>
+            <p class="detail-vuln-path left">
+              {foreach $vulnGroup as $occurrence}
+                {var $vulnNode = $nodes->firstWhere('guid', $occurrence->node_guid)}
+                {if $vulnNode}
+                  {if $vulnNode->path}{$vulnNode->path->implode(' / ')} / {/if}<a href="#node-{$vulnNode->guid}">{$vulnNode->name} ({$vulnNode->type})</a><br>
+                {/if}
+                {if $occurrence->location}{$occurrence->location}<br>{/if}
+              {/foreach}
+            </p>
+
+            <div n:if="$vulnerability->references->isNotEmpty()">
+              <h5>References</h5>
+              <ul n:inner-foreach="$vulnerability->references as $reference">
+                <li>{$reference->name}<br><a href="{$reference->url}">{$reference->url}</a></li>
+              </ul>
+            </div>
+
+            {var $files = $attachments->where('node_guid', $vulnerability->node_guid)}
+            <div n:if="$files->isNotEmpty()">
+              <h5>Attachments</h5>
+              <figure n:foreach="$files as $attachment" style="margin:0 0 1rem;">
+                <img n:if="$attachment->content"
+                     src="data:{$attachment->mime_type};base64,{$attachment->content}"
+                     alt="{$attachment->name}"
+                     style="display:block; max-width:100%; height:auto;">
+                <figcaption style="margin-top:.5rem;">{$attachment->name} ({$attachment->filename})</figcaption>
+              </figure>
+            </div>
+
+            {var $findingNo = $findingNo + 1}
+            {var $firstFinding = false}
+          {/foreach}
+
+          {var $categoryNo = $categoryNo + 1}
+        {/if}
+      {/if}
+    {/foreach}
+  </div>
+</body>
+
+</html>

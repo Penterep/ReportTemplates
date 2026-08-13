@@ -31,7 +31,7 @@
   <!-- Titulní stránka -->
   <div class="section1">
     <h1 style="padding-top:130px;">Report z bezpečnostního testu webové aplikace</h1>
-    <h2>(podle závažnosti)</h2>
+    <h2>(podle stromu)</h2>
     <hr />
     <h2>{$report->project->name}</h2>
     <h2>{$report->target->address}</h2>
@@ -56,8 +56,11 @@
       <li class="toc-level-1"><a href="#sec-souhrn-hlavni">3.3 Hlavní nálezy</a></li>
       <li class="toc-level-1"><a href="#sec-souhrn-zaver">3.4 Závěr</a></li>
       <li><a href="#sec-popis-testu">4 Popis a průběh testu</a></li>
-      <li><a href="#sec-technologie">5 Identifikované technologie</a></li>
-      <li><a href="#sec-nalezy">6 Zjištěné skutečnosti a nedostatky</a></li>
+      <li><a href="#sec-strom">5 Seznam otestovaných uzlů</a></li>
+      {foreach $nodes->whereNull('parent_guid')->sortBy('name')->values() as $tocNode}
+        <li class="toc-level-1"><a href="#node-{$tocNode->guid}">5.{$iterator->counter} {$tocNode->name}</a></li>
+      {/foreach}
+      <li><a href="#sec-nalezy">6 Seznam nalezených zranitelností (podle závažnosti)</a></li>
       {foreach $severityLevels as $code => $level}
         {if $level > 0 && $vulnerabilities->where('severity_code', $code)->isNotEmpty()}
           <li class="toc-level-1"><a href="#sev-{$iterator->counter}">{$vulnerabilities->where('severity_code', $code)->first()?->severity ?? $code}</a></li>
@@ -67,7 +70,7 @@
   </section>
   <div class="pagebreak"></div>
 
-  <!-- Popis dokumentu-->
+  <!-- Popis dokumentu -->
   <div class="section3">
     <h2 id="sec-popis" class="bookmark-0">2 Popis dokumentu</h2>
     <p>Tento dokument obsahuje výsledky penetračního testu, jehož provedením byla pověřena společnost <b>{$report->owner->company}</b>. Penetrační test měl v praxi ověřit funkčnost zabezpečení webové aplikace <b>{$report->target->name}</b> provozované na adrese <b>{$report->target->address}</b>. Penetrační test byl prováděn z anonymní úrovně, bez znalosti zdrojových kódů aplikace. Konzultant společnosti <b>{$report->owner->company}</b> provádějící test disponoval pouze omezenou znalostí o prostředí zákazníka a vycházel především z informací běžně dostupných libovolnému uživateli Internetu. Testování bylo zaměřeno na odhalení možnosti průniku do aplikace (a dalších souvisejících prvků, např. do databází interní sítě) „náhodným“ útočníkem (tzv. „outsiderem“), který nemá představu o struktuře a obsahu aplikace a pouze „pokouší štěstí“.</p>
@@ -75,6 +78,7 @@
     <ul>
       <li><b>Manažerský souhrn</b> - stručný průřez průběhu testů společně s výsledky.</li>
       <li><b>Popis testu</b> - popis metodiky testu.</li>
+      <li><b>Seznam otestovaných uzlů</b> - strom součástí aplikace, nad kterými testy proběhly.</li>
       <li><b>Zjištěné skutečnosti</b> - nedostatky a další významné informace zjištěné během provádění testu.</li>
     </ul>
     </p>
@@ -125,7 +129,7 @@
   </div>
   <div class="pagebreak"></div>
 
-  <!-- Popis testu-->
+  <!-- Popis testu -->
   <div class="section5">
     <h2 id="sec-popis-testu" class="bookmark-0">4 Popis a průběh testu</h2>
 
@@ -158,48 +162,193 @@
   </div>
   <div class="pagebreak"></div>
 
-  <!-- Technologie -->
-  <div class="section6">
-    <h2 id="sec-technologie" class="bookmark-0">5 Identifikované technologie</h2>
-    <p>Během testování byly identifikovány následující softwarové součásti:</p>
-    <table>
-      <thead>
-        <tr>
-          <th style="padding-right:12px;">Software</th>
-          <th style="padding-right:12px;">Verze</th>
-          <th style="text-align:center">Známé zranitelnosti</th>
-        </tr>
-      </thead>
-      <tbody>
-        {foreach $nodes->where('type', 'software')->sortBy('name') as $software}
-          {var $list = $vulnerabilities->where('node_guid', $software->guid)}
-          <tr>
-            <td>{$software->name}</td>
-            <td>{$software->properties->get('version')}</td>
-            <td style="text-align:center">{foreach $list as $v}{if $v->text->code === 'PTV-WEB-SW-KNOWNVULN'}<span style="color:#c62828;font-weight:bold;">✖</span>{/if}{/foreach}</td>
-          </tr>
+  <!-- Seznam otestovaných uzlů (strom) -->
+  <div class="section7">
+    <h2 id="sec-strom" class="bookmark-0">5 Seznam otestovaných uzlů</h2>
+
+    {* Strom je rozepsaný do 6 úrovní ručně - sandbox Latte nepovoluje {include}, takže rekurzivní blok nelze použít. *}
+    {* ── Úroveň 1 ── *}
+    {foreach $nodes->whereNull('parent_guid')->sortBy('name')->values() as $node1}
+      {var $num1 = '5.' . $iterator->counter}
+      <div class="tree-node tree-depth-1">
+        <div id="node-{$node1->guid}" class="node-title bookmark-1">{$num1} {$node1->name}<span n:if="$node1->type" class="node-type"> &mdash; {$node1->type}</span></div>
+        <div class="node-body">
+          <table class="node-props" n:if="$node1->properties">
+            {foreach $node1->properties->toArray() as $propKey => $propValue}
+              {if $propKey !== 'group'}
+                <tr>
+                  <td class="prop-key">{$propKey}:</td>
+                  <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
+                </tr>
+              {/if}
+            {/foreach}
+          </table>
+          {var $vulns1 = $vulnerabilities->where('node_guid', $node1->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
+          <div class="node-vulns" n:if="$vulns1->isNotEmpty()">
+            <span class="vulns-label">Zranitelnosti:</span>
+            <ul n:inner-foreach="$vulns1 as $nv">
+              <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {* ── Úroveň 2 ── *}
+      {foreach $nodes->where('parent_guid', $node1->guid)->sortBy('name')->values() as $node2}
+        {var $num2 = $num1 . '.' . $iterator->counter}
+        <div class="tree-node tree-depth-2">
+          <div id="node-{$node2->guid}" class="node-title bookmark-2">{$num2} {$node2->name}<span n:if="$node2->type" class="node-type"> &mdash; {$node2->type}</span></div>
+          <div class="node-body">
+            <table class="node-props" n:if="$node2->properties">
+              {foreach $node2->properties->toArray() as $propKey => $propValue}
+                {if $propKey !== 'group'}
+                  <tr>
+                    <td class="prop-key">{$propKey}:</td>
+                    <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
+                  </tr>
+                {/if}
+              {/foreach}
+            </table>
+            {var $vulns2 = $vulnerabilities->where('node_guid', $node2->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
+            <div class="node-vulns" n:if="$vulns2->isNotEmpty()">
+              <span class="vulns-label">Zranitelnosti:</span>
+              <ul n:inner-foreach="$vulns2 as $nv">
+                <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {* ── Úroveň 3 ── *}
+        {foreach $nodes->where('parent_guid', $node2->guid)->sortBy('name')->values() as $node3}
+          {var $num3 = $num2 . '.' . $iterator->counter}
+          <div class="tree-node tree-depth-3">
+            <div id="node-{$node3->guid}" class="node-title bookmark-3">{$num3} {$node3->name}<span n:if="$node3->type" class="node-type"> &mdash; {$node3->type}</span></div>
+            <div class="node-body">
+              <table class="node-props" n:if="$node3->properties">
+                {foreach $node3->properties->toArray() as $propKey => $propValue}
+                  {if $propKey !== 'group'}
+                    <tr>
+                      <td class="prop-key">{$propKey}:</td>
+                      <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
+                    </tr>
+                  {/if}
+                {/foreach}
+              </table>
+              {var $vulns3 = $vulnerabilities->where('node_guid', $node3->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
+              <div class="node-vulns" n:if="$vulns3->isNotEmpty()">
+                <span class="vulns-label">Zranitelnosti:</span>
+                <ul n:inner-foreach="$vulns3 as $nv">
+                  <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {* ── Úroveň 4 ── *}
+          {foreach $nodes->where('parent_guid', $node3->guid)->sortBy('name')->values() as $node4}
+            {var $num4 = $num3 . '.' . $iterator->counter}
+            <div class="tree-node tree-depth-4">
+              <div id="node-{$node4->guid}" class="node-title bookmark-4">{$num4} {$node4->name}<span n:if="$node4->type" class="node-type"> &mdash; {$node4->type}</span></div>
+              <div class="node-body">
+                <table class="node-props" n:if="$node4->properties">
+                  {foreach $node4->properties->toArray() as $propKey => $propValue}
+                    {if $propKey !== 'group'}
+                      <tr>
+                        <td class="prop-key">{$propKey}:</td>
+                        <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
+                      </tr>
+                    {/if}
+                  {/foreach}
+                </table>
+                {var $vulns4 = $vulnerabilities->where('node_guid', $node4->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
+                <div class="node-vulns" n:if="$vulns4->isNotEmpty()">
+                  <span class="vulns-label">Zranitelnosti:</span>
+                  <ul n:inner-foreach="$vulns4 as $nv">
+                    <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {* ── Úroveň 5 ── *}
+            {foreach $nodes->where('parent_guid', $node4->guid)->sortBy('name')->values() as $node5}
+              {var $num5 = $num4 . '.' . $iterator->counter}
+              <div class="tree-node tree-depth-5">
+                <div id="node-{$node5->guid}" class="node-title bookmark-5">{$num5} {$node5->name}<span n:if="$node5->type" class="node-type"> &mdash; {$node5->type}</span></div>
+                <div class="node-body">
+                  <table class="node-props" n:if="$node5->properties">
+                    {foreach $node5->properties->toArray() as $propKey => $propValue}
+                      {if $propKey !== 'group'}
+                        <tr>
+                          <td class="prop-key">{$propKey}:</td>
+                          <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
+                        </tr>
+                      {/if}
+                    {/foreach}
+                  </table>
+                  {var $vulns5 = $vulnerabilities->where('node_guid', $node5->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
+                  <div class="node-vulns" n:if="$vulns5->isNotEmpty()">
+                    <span class="vulns-label">Zranitelnosti:</span>
+                    <ul n:inner-foreach="$vulns5 as $nv">
+                      <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {* ── Úroveň 6 ── *}
+              {foreach $nodes->where('parent_guid', $node5->guid)->sortBy('name')->values() as $node6}
+                {var $num6 = $num5 . '.' . $iterator->counter}
+                <div class="tree-node tree-depth-6">
+                  <div id="node-{$node6->guid}" class="node-title bookmark-6">{$num6} {$node6->name}<span n:if="$node6->type" class="node-type"> &mdash; {$node6->type}</span></div>
+                  <div class="node-body">
+                    <table class="node-props" n:if="$node6->properties">
+                      {foreach $node6->properties->toArray() as $propKey => $propValue}
+                        {if $propKey !== 'group'}
+                          <tr>
+                            <td class="prop-key">{$propKey}:</td>
+                            <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
+                          </tr>
+                        {/if}
+                      {/foreach}
+                    </table>
+                    {var $vulns6 = $vulnerabilities->where('node_guid', $node6->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
+                    <div class="node-vulns" n:if="$vulns6->isNotEmpty()">
+                      <span class="vulns-label">Zranitelnosti:</span>
+                      <ul n:inner-foreach="$vulns6 as $nv">
+                        <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              {/foreach}
+            {/foreach}
+          {/foreach}
         {/foreach}
-      </tbody>
-    </table>
+      {/foreach}
+    {/foreach}
   </div>
   <div class="pagebreak"></div>
 
   <!-- Detaily nálezů -->
   <div class="section6">
-    <h2 id="sec-nalezy" class="bookmark-0">6 Zjištěné skutečnosti a nedostatky</h2>
+    <h2 id="sec-nalezy" class="bookmark-0">6 Seznam nalezených zranitelností (podle závažnosti)</h2>
 
     {var $categoryNo = 1}
+    {var $firstFinding = true}
     {foreach $severityLevels as $code => $level}
       {if $level > 0}
         {var $found = $vulnerabilities->where('severity_code', $code)}
         {if $found->isNotEmpty()}
+          <div class="pagebreak" n:if="!$firstFinding"></div>
           <h3 id="sev-{$iterator->counter}" class="bookmark-1">6.{$categoryNo} {$found->first()?->severity ?? $code} závažnost</h3>
           {var $findingNo = 1}
-          {var $outerIterator = $iterator}
 
           {foreach $found->groupBy('text.code') as $vulnGroup}
             {var $vulnerability = $vulnGroup->first()}
-            <h4 class="bookmark-2">6.{$categoryNo}.{$findingNo} {$vulnerability->text->name}</h4>
+            <div class="pagebreak" n:if="!$firstFinding && !$iterator->first"></div>
+            <h4 id="vuln-{$vulnerability->text->code}" class="bookmark-2">6.{$categoryNo}.{$findingNo} {$vulnerability->text->name}</h4>
 
             <h5>Závažnost</h5>
             <table class="detail-vuln-severity">
@@ -247,7 +396,7 @@
               {foreach $vulnGroup as $occurrence}
                 {var $vulnNode = $nodes->firstWhere('guid', $occurrence->node_guid)}
                 {if $vulnNode}
-                  {if $vulnNode->path}{$vulnNode->path->implode(' / ')} / {/if}{$vulnNode->name} ({$vulnNode->type})<br>
+                  {if $vulnNode->path}{$vulnNode->path->implode(' / ')} / {/if}<a href="#node-{$vulnNode->guid}">{$vulnNode->name} ({$vulnNode->type})</a><br>
                 {/if}
                 {if $occurrence->location}{$occurrence->location}<br>{/if}
               {/foreach}
@@ -273,7 +422,7 @@
             </div>
 
             {var $findingNo = $findingNo + 1}
-            <div class="pagebreak" n:if="!$iterator->last || !$outerIterator->last"></div>
+            {var $firstFinding = false}
           {/foreach}
 
           {var $categoryNo = $categoryNo + 1}
