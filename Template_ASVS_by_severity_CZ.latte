@@ -17,6 +17,9 @@
     'vulnSeverityIrrelevant' => 0,
 ]}
 
+{* Stejný nález = stejný kód i název. *}
+{var $findingKey = fn($v) => $v->text->code . '|' . $v->text->name}
+
 <!DOCTYPE html>
 <html lang="cs">
 
@@ -197,7 +200,7 @@
           {var $findingNo = 1}
           {var $outerIterator = $iterator}
 
-          {foreach $found->groupBy('text.code') as $vulnGroup}
+          {foreach $found->groupBy($findingKey) as $vulnGroup}
             {var $vulnerability = $vulnGroup->first()}
             <h4 class="bookmark-2">6.{$categoryNo}.{$findingNo} {$vulnerability->text->name}</h4>
 
