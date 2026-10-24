@@ -166,15 +166,26 @@
   <div class="section7">
     <h2 id="sec-strom" class="bookmark-0">5 Seznam otestovaných uzlů</h2>
 
-    {* Strom je rozepsaný do 6 úrovní ručně - sandbox Latte nepovoluje {include}, takže rekurzivní blok nelze použít. *}
-    {* ── Úroveň 1 ── *}
-    {foreach $nodes->whereNull('parent_guid')->sortBy('name')->values() as $node1}
-      {var $num1 = '5.' . $iterator->counter}
-      <div class="tree-node tree-depth-1">
-        <div id="node-{$node1->guid}" class="node-title bookmark-1">{$num1} {$node1->name}<span n:if="$node1->type" class="node-type"> &mdash; {$node1->type}</span></div>
+    {var $childrenByParent = $nodes->sortBy('name')->groupBy('parent_guid')}
+    {var $vulnsByNode = $vulnerabilities->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])->groupBy('node_guid')}
+
+    {var $stack = []}
+    {var $top = -1}
+    {foreach $nodes->whereNull('parent_guid')->sortBy('name')->values()->reverse() as $index => $child}
+      {var $top = $top + 1}
+      {var $stack[$top] = ['node' => $child, 'num' => '5.' . ($index + 1), 'depth' => 1]}
+    {/foreach}
+    {while $top >= 0}
+      {var $node = $stack[$top]['node']}
+      {var $num = $stack[$top]['num']}
+      {var $depth = $stack[$top]['depth']}
+      {var $styleDepth = $depth > 6 ? 6 : $depth}
+      {var $top = $top - 1}
+      <div class="tree-node tree-depth-{$styleDepth}">
+        <div id="node-{$node->guid}" class="node-title bookmark-{$styleDepth}">{$num} {$node->name}<span n:if="$node->type" class="node-type"> &mdash; {$node->type}</span></div>
         <div class="node-body">
-          <table class="node-props" n:if="$node1->properties">
-            {foreach $node1->properties->toArray() as $propKey => $propValue}
+          <table class="node-props" n:if="$node->properties">
+            {foreach $node->properties->toArray() as $propKey => $propValue}
               {if $propKey !== 'group'}
                 <tr>
                   <td class="prop-key">{$propKey}:</td>
@@ -183,151 +194,23 @@
               {/if}
             {/foreach}
           </table>
-          {var $vulns1 = $vulnerabilities->where('node_guid', $node1->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
-          <div class="node-vulns" n:if="$vulns1->isNotEmpty()">
+          {var $nodeVulns = $vulnsByNode->get($node->guid)}
+          <div class="node-vulns" n:if="$nodeVulns">
             <span class="vulns-label">Zranitelnosti:</span>
-            <ul n:inner-foreach="$vulns1 as $nv">
+            <ul n:inner-foreach="$nodeVulns as $nv">
               <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
             </ul>
           </div>
         </div>
       </div>
 
-      {* ── Úroveň 2 ── *}
-      {foreach $nodes->where('parent_guid', $node1->guid)->sortBy('name')->values() as $node2}
-        {var $num2 = $num1 . '.' . $iterator->counter}
-        <div class="tree-node tree-depth-2">
-          <div id="node-{$node2->guid}" class="node-title bookmark-2">{$num2} {$node2->name}<span n:if="$node2->type" class="node-type"> &mdash; {$node2->type}</span></div>
-          <div class="node-body">
-            <table class="node-props" n:if="$node2->properties">
-              {foreach $node2->properties->toArray() as $propKey => $propValue}
-                {if $propKey !== 'group'}
-                  <tr>
-                    <td class="prop-key">{$propKey}:</td>
-                    <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
-                  </tr>
-                {/if}
-              {/foreach}
-            </table>
-            {var $vulns2 = $vulnerabilities->where('node_guid', $node2->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
-            <div class="node-vulns" n:if="$vulns2->isNotEmpty()">
-              <span class="vulns-label">Zranitelnosti:</span>
-              <ul n:inner-foreach="$vulns2 as $nv">
-                <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {* ── Úroveň 3 ── *}
-        {foreach $nodes->where('parent_guid', $node2->guid)->sortBy('name')->values() as $node3}
-          {var $num3 = $num2 . '.' . $iterator->counter}
-          <div class="tree-node tree-depth-3">
-            <div id="node-{$node3->guid}" class="node-title bookmark-3">{$num3} {$node3->name}<span n:if="$node3->type" class="node-type"> &mdash; {$node3->type}</span></div>
-            <div class="node-body">
-              <table class="node-props" n:if="$node3->properties">
-                {foreach $node3->properties->toArray() as $propKey => $propValue}
-                  {if $propKey !== 'group'}
-                    <tr>
-                      <td class="prop-key">{$propKey}:</td>
-                      <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
-                    </tr>
-                  {/if}
-                {/foreach}
-              </table>
-              {var $vulns3 = $vulnerabilities->where('node_guid', $node3->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
-              <div class="node-vulns" n:if="$vulns3->isNotEmpty()">
-                <span class="vulns-label">Zranitelnosti:</span>
-                <ul n:inner-foreach="$vulns3 as $nv">
-                  <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {* ── Úroveň 4 ── *}
-          {foreach $nodes->where('parent_guid', $node3->guid)->sortBy('name')->values() as $node4}
-            {var $num4 = $num3 . '.' . $iterator->counter}
-            <div class="tree-node tree-depth-4">
-              <div id="node-{$node4->guid}" class="node-title bookmark-4">{$num4} {$node4->name}<span n:if="$node4->type" class="node-type"> &mdash; {$node4->type}</span></div>
-              <div class="node-body">
-                <table class="node-props" n:if="$node4->properties">
-                  {foreach $node4->properties->toArray() as $propKey => $propValue}
-                    {if $propKey !== 'group'}
-                      <tr>
-                        <td class="prop-key">{$propKey}:</td>
-                        <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
-                      </tr>
-                    {/if}
-                  {/foreach}
-                </table>
-                {var $vulns4 = $vulnerabilities->where('node_guid', $node4->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
-                <div class="node-vulns" n:if="$vulns4->isNotEmpty()">
-                  <span class="vulns-label">Zranitelnosti:</span>
-                  <ul n:inner-foreach="$vulns4 as $nv">
-                    <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {* ── Úroveň 5 ── *}
-            {foreach $nodes->where('parent_guid', $node4->guid)->sortBy('name')->values() as $node5}
-              {var $num5 = $num4 . '.' . $iterator->counter}
-              <div class="tree-node tree-depth-5">
-                <div id="node-{$node5->guid}" class="node-title bookmark-5">{$num5} {$node5->name}<span n:if="$node5->type" class="node-type"> &mdash; {$node5->type}</span></div>
-                <div class="node-body">
-                  <table class="node-props" n:if="$node5->properties">
-                    {foreach $node5->properties->toArray() as $propKey => $propValue}
-                      {if $propKey !== 'group'}
-                        <tr>
-                          <td class="prop-key">{$propKey}:</td>
-                          <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
-                        </tr>
-                      {/if}
-                    {/foreach}
-                  </table>
-                  {var $vulns5 = $vulnerabilities->where('node_guid', $node5->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
-                  <div class="node-vulns" n:if="$vulns5->isNotEmpty()">
-                    <span class="vulns-label">Zranitelnosti:</span>
-                    <ul n:inner-foreach="$vulns5 as $nv">
-                      <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {* ── Úroveň 6 ── *}
-              {foreach $nodes->where('parent_guid', $node5->guid)->sortBy('name')->values() as $node6}
-                {var $num6 = $num5 . '.' . $iterator->counter}
-                <div class="tree-node tree-depth-6">
-                  <div id="node-{$node6->guid}" class="node-title bookmark-6">{$num6} {$node6->name}<span n:if="$node6->type" class="node-type"> &mdash; {$node6->type}</span></div>
-                  <div class="node-body">
-                    <table class="node-props" n:if="$node6->properties">
-                      {foreach $node6->properties->toArray() as $propKey => $propValue}
-                        {if $propKey !== 'group'}
-                          <tr>
-                            <td class="prop-key">{$propKey}:</td>
-                            <td class="prop-val">{if $propValue !== null && $propValue !== ''}{$propValue}{else}-{/if}</td>
-                          </tr>
-                        {/if}
-                      {/foreach}
-                    </table>
-                    {var $vulns6 = $vulnerabilities->where('node_guid', $node6->guid)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])}
-                    <div class="node-vulns" n:if="$vulns6->isNotEmpty()">
-                      <span class="vulns-label">Zranitelnosti:</span>
-                      <ul n:inner-foreach="$vulns6 as $nv">
-                        <li><a href="#vuln-{$nv->text->code}">{$nv->text->name}</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              {/foreach}
-            {/foreach}
-          {/foreach}
+      {if $childrenByParent->has($node->guid)}
+        {foreach $childrenByParent->get($node->guid)->reverse() as $index => $child}
+          {var $top = $top + 1}
+          {var $stack[$top] = ['node' => $child, 'num' => $num . '.' . ($index + 1), 'depth' => $depth + 1]}
         {/foreach}
-      {/foreach}
-    {/foreach}
+      {/if}
+    {/while}
   </div>
   <div class="pagebreak"></div>
 
@@ -335,6 +218,7 @@
   <div class="section6">
     <h2 id="sec-nalezy" class="bookmark-0">6 Seznam nalezených zranitelností (podle závažnosti)</h2>
 
+    {var $nodesByGuid = $nodes->keyBy('guid')}
     {var $categoryNo = 1}
     {var $firstFinding = true}
     {foreach $severityLevels as $code => $level}
@@ -394,7 +278,7 @@
             <h5>Výskyt</h5>
             <p class="detail-vuln-path left">
               {foreach $vulnGroup as $occurrence}
-                {var $vulnNode = $nodes->firstWhere('guid', $occurrence->node_guid)}
+                {var $vulnNode = $nodesByGuid->get($occurrence->node_guid)}
                 {if $vulnNode}
                   {if $vulnNode->path}{$vulnNode->path->implode(' / ')} / {/if}<a href="#node-{$vulnNode->guid}">{$vulnNode->name} ({$vulnNode->type})</a><br>
                 {/if}
