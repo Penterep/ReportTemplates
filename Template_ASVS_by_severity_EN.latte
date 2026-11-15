@@ -356,7 +356,7 @@ Icon (icon), type label (resourceName) and group flag (group) come with the node
           {foreach $found->groupBy($findingKey) as $vulnGroup}
             {var $vulnerability = $vulnGroup->first()}
             {* A finding attribute = the first filled value across its occurrences. *}
-            {var $pick = fn($field) => $vulnGroup->first(fn($o) => $filled($o->$field))?->$field}
+            {var $pick = fn($field) => $vulnGroup->first(fn($o) => $filled($o->$field ?? null))?->$field ?? null}
             <h4 class="bookmark-2">6.{$categoryNo}.{$findingNo} {$vulnerability->text->name}</h4>
 
             <h5>Severity</h5>

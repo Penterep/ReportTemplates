@@ -347,7 +347,7 @@ Ikonu (icon), název typu (resourceName) a příznak skupiny (group) dodává p�
 
     {var $categoryNo = 1}
     {foreach $categoriesDefinitions->where('category', 'L_VULNERABILITY_CATEGORY_MAIN_ASVS')->whereNull('parent_guid')->sortBy('name') as $category}
-      {var $found = $vulnerabilities->getByCategory($category->code)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])->sortByDesc(fn($v) => (float) $v->cvss_score_v4 > (float) $v->cvss_score ? (float) $v->cvss_score_v4 : (float) $v->cvss_score)}
+      {var $found = $vulnerabilities->getByCategory($category->code)->whereNotIn('severity_code', ['vulnSeverityIrrelevant'])->sortByDesc(fn($v) => (float) ($v->cvss_score_v4 ?? 0) > (float) $v->cvss_score ? (float) ($v->cvss_score_v4 ?? 0) : (float) $v->cvss_score)}
       {if $found->isNotEmpty()}
         <h3 id="cat-{$iterator->counter}" class="bookmark-1">6.{$categoryNo} {$category->name}</h3>
         {var $findingNo = 1}
@@ -356,7 +356,7 @@ Ikonu (icon), název typu (resourceName) a příznak skupiny (group) dodává p�
         {foreach $found->groupBy($findingKey) as $vulnGroup}
           {var $vulnerability = $vulnGroup->first()}
           {* Vlastnost nálezu = první vyplněná hodnota napříč jeho výskyty. *}
-          {var $pick = fn($field) => $vulnGroup->first(fn($o) => $filled($o->$field))?->$field}
+          {var $pick = fn($field) => $vulnGroup->first(fn($o) => $filled($o->$field ?? null))?->$field ?? null}
           <h4 class="bookmark-2">6.{$categoryNo}.{$findingNo} {$vulnerability->text->name}</h4>
 
           <h5>Závažnost</h5>
