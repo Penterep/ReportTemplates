@@ -145,6 +145,9 @@ _home = kořen cesty
     'vulnSeverityIrrelevant' => 0,
 ]}
 
+{* Severity level labels for rows without findings (otherwise the label comes from the level's first finding). *}
+{var $severityLabels = [5 => 'Critical', 4 => 'High', 3 => 'Medium', 2 => 'Low', 1 => 'Informational']}
+
 {* Same finding = same code and name *}
 {var $findingKey = fn($v) => $v->text->code . '|' . $v->text->name}
 
@@ -249,7 +252,7 @@ Icon (icon), type label (resourceName) and group flag (group) come with the node
         {if $level > 0}
           {var $found = $vulnerabilities->where('severity_code', $code)}
           <tr>
-            <td style="padding-right:50px;">{$found->first()?->severity ?? $code}</td>
+            <td style="padding-right:50px;">{$found->first()?->severity ?? $severityLabels[$level] ?? $code}</td>
             <td style="padding-right:50px;">{$found->count()}</td>
             <td class="graph severity-{$level}">{for $i = 0; $i < $found->count(); $i++}█{/for}</td>
           </tr>

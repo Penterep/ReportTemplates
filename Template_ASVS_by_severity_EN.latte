@@ -144,6 +144,9 @@ _default = unknown icon
     'vulnSeverityIrrelevant' => 0,
 ]}
 
+{* Severity level labels for rows without findings (otherwise the label comes from the level's first finding). *}
+{var $severityLabels = [5 => 'Critical', 4 => 'High', 3 => 'Medium', 2 => 'Low', 1 => 'Informational']}
+
 {* Same finding = same code and name *}
 {var $findingKey = fn($v) => $v->text->code . '|' . $v->text->name}
 
@@ -216,7 +219,7 @@ Icon (icon), type label (resourceName) and group flag (group) come with the node
       <li><a href="#sec-nalezy">6 Findings and Deficiencies</a></li>
       {foreach $severityLevels as $code => $level}
         {if $level > 0 && $vulnerabilities->where('severity_code', $code)->isNotEmpty()}
-          <li class="toc-level-1"><a href="#sev-{$iterator->counter}">{$vulnerabilities->where('severity_code', $code)->first()?->severity ?? $code}</a></li>
+          <li class="toc-level-1"><a href="#sev-{$iterator->counter}">{$vulnerabilities->where('severity_code', $code)->first()?->severity ?? $severityLabels[$level] ?? $code}</a></li>
         {/if}
       {/foreach}
     </ul>
@@ -248,7 +251,7 @@ Icon (icon), type label (resourceName) and group flag (group) come with the node
         {if $level > 0}
           {var $found = $vulnerabilities->where('severity_code', $code)}
           <tr>
-            <td style="padding-right:50px;">{$found->first()?->severity ?? $code}</td>
+            <td style="padding-right:50px;">{$found->first()?->severity ?? $severityLabels[$level] ?? $code}</td>
             <td style="padding-right:50px;">{$found->count()}</td>
             <td class="graph severity-{$level}">{for $i = 0; $i < $found->count(); $i++}█{/for}</td>
           </tr>
@@ -349,7 +352,7 @@ Icon (icon), type label (resourceName) and group flag (group) come with the node
       {if $level > 0}
         {var $found = $vulnerabilities->where('severity_code', $code)}
         {if $found->isNotEmpty()}
-          <h3 id="sev-{$iterator->counter}" class="bookmark-1">6.{$categoryNo} {$found->first()?->severity ?? $code} severity</h3>
+          <h3 id="sev-{$iterator->counter}" class="bookmark-1">6.{$categoryNo} {$found->first()?->severity ?? $severityLabels[$level] ?? $code} severity</h3>
           {var $findingNo = 1}
           {var $outerIterator = $iterator}
 

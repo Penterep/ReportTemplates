@@ -145,6 +145,9 @@ _home = kořen cesty
     'vulnSeverityIrrelevant' => 0,
 ]}
 
+{* Popisky úrovní závažnosti pro řádky bez nálezů (jinak se popisek bere z prvního nálezu dané úrovně). *}
+{var $severityLabels = [5 => 'Kritická', 4 => 'Vysoká', 3 => 'Střední', 2 => 'Nízká', 1 => 'Informační']}
+
 {* 
 V cestě k výskytu se nezobrazuje kořenový uzel (projekt) ani skupiny
 Ikonu (icon), název typu (resourceName) a příznak skupiny (group) dodává přímo uzel
@@ -215,7 +218,7 @@ Ikonu (icon), název typu (resourceName) a příznak skupiny (group) dodává p�
       <li><a href="#sec-nalezy">6 Seznam nalezených zranitelností (podle závažnosti)</a></li>
       {foreach $severityLevels as $code => $level}
         {if $level > 0 && $vulnerabilities->where('severity_code', $code)->isNotEmpty()}
-          <li class="toc-level-1"><a href="#sev-{$iterator->counter}">{$vulnerabilities->where('severity_code', $code)->first()?->severity ?? $code}</a></li>
+          <li class="toc-level-1"><a href="#sev-{$iterator->counter}">{$vulnerabilities->where('severity_code', $code)->first()?->severity ?? $severityLabels[$level] ?? $code}</a></li>
         {/if}
       {/foreach}
     </ul>
@@ -248,7 +251,7 @@ Ikonu (icon), název typu (resourceName) a příznak skupiny (group) dodává p�
         {if $level > 0}
           {var $found = $vulnerabilities->where('severity_code', $code)}
           <tr>
-            <td style="padding-right:50px;">{$found->first()?->severity ?? $code}</td>
+            <td style="padding-right:50px;">{$found->first()?->severity ?? $severityLabels[$level] ?? $code}</td>
             <td style="padding-right:50px;">{$found->count()}</td>
             <td class="graph severity-{$level}">{for $i = 0; $i < $found->count(); $i++}█{/for}</td>
           </tr>
@@ -379,7 +382,7 @@ Ikonu (icon), název typu (resourceName) a příznak skupiny (group) dodává p�
         {var $found = $vulnerabilities->where('severity_code', $code)}
         {if $found->isNotEmpty()}
           <div class="pagebreak" n:if="!$firstFinding"></div>
-          <h3 id="sev-{$iterator->counter}" class="bookmark-1">6.{$categoryNo} {$found->first()?->severity ?? $code} závažnost</h3>
+          <h3 id="sev-{$iterator->counter}" class="bookmark-1">6.{$categoryNo} {$found->first()?->severity ?? $severityLabels[$level] ?? $code} závažnost</h3>
           {var $findingNo = 1}
 
           {foreach $found->groupBy('text.code') as $vulnGroup}

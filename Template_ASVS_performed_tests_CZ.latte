@@ -17,6 +17,9 @@
     'vulnSeverityIrrelevant' => 0,
 ]}
 
+{* Popisky úrovní závažnosti pro řádky bez nálezů (jinak se popisek bere z prvního nálezu dané úrovně). *}
+{var $severityLabels = [5 => 'Kritická', 4 => 'Vysoká', 3 => 'Střední', 2 => 'Nízká', 1 => 'Informační']}
+
 <!DOCTYPE html>
 <html lang="cs">
 
@@ -84,7 +87,7 @@
       {foreach $severityLevels as $code => $level}
         {var $found = $vulnerabilities->where('severity_code', $code)}
         <tr>
-          <td style="padding-right:50px;">{$found->first()?->severity ?? $code}</td>
+          <td style="padding-right:50px;">{$found->first()?->severity ?? $severityLabels[$level] ?? $code}</td>
           <td style="padding-right:50px;">{$found->count()}</td>
           <td class="graph severity-{$level}">{for $i = 0; $i < $found->count(); $i++}█{/for}</td>
         </tr>
